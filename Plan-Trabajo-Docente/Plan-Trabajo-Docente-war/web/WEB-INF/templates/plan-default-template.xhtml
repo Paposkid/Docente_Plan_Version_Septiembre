@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        </f:facet>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="./css/default.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <title><ui:insert name="title">#{msg['titulo']}</ui:insert></title>
+    </h:head>
+
+    <h:body>
+        <h:form>
+            <div id="top" class="top">
+                <div style="margin-bottom: 5px;">
+                    <div style="float: left;">
+                        <h:link outcome="/secure/inicio">
+                            <h:graphicImage style="border: 0px, size 20px" library="images" name="HeaderPoli.png" />
+                        </h:link>
+                    </div>
+                    <div style="float: right;">
+                        <p:outputLabel value="Bienvenido:  " />
+                        <p:outputLabel value="#{seguridadBean.usuario.nombreUsuario}" style="text-transform: uppercase;" />
+                        <p:spacer width="10" />
+                        <p:commandLink value="Desconectar" ajax="false" action="#{seguridadBean.cerrarSesion()}" immediate="true" />
+                        <br/>
+                    </div>
+                    <div style="clear: both" />
+                </div>
+                <ui:include src="./../menu/menu.xhtml" />
+                <p:messages globalOnly="false" showDetail="false" autoUpdate="true" />
+            </div>
+
+            <div id="breadCrumb">
+                <ui:insert name="breadCrumb">
+                    <p:breadCrumb homeDisplay="text">
+                        <p:menuitem icon="ui-icon-home" url="#" onclick="return false;" />
+                        <p:menuitem value="TODO: Definir" url="#" />
+                    </p:breadCrumb>
+                </ui:insert>
+            </div>
+            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+            <p:dialog widgetVar="statusDialog" modal="true"  draggable="false" closable="false" resizable="false" showHeader="false">
+                <p:graphicImage library="images" name="ajax-loader.gif" />
+            </p:dialog>
+        </h:form>
+        <div id="content" class="center_content">
+            <ui:insert name="content">
+                TODO: Definir
+            </ui:insert>
+        </div>
+    </h:body>
+
+</html>

@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+Nombre: adminFacultades. 
+Descripción:Gestionar las facultades.
+Realizado Por: Jorge Armando Montoya Jaramillo.
+Fecha: 7/11/2014
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="/WEB-INF/templates/plan-default-template.xhtml">
+            <ui:param name="paramMenuTab" value="1" />
+            <ui:define name="title">
+                #{msg['txt.plan']} - #{msg['entidad.facultad']}
+            </ui:define>
+
+            <ui:define name="breadCrumb">
+                <p:breadCrumb homeDisplay="text">
+                    <p:menuitem icon="ui-icon-home" outcome="/secure/inicio" />
+                    <p:menuitem value="#{msg['administracion.ruta.facultad']}"
+                                url="#" />
+                </p:breadCrumb>
+            </ui:define>
+
+            <ui:define name="content" >
+                <f:view>
+                    <h:form id="frmAnalista"> 
+                        <p:panel id="resultados"  style="width: 100%"
+                                 rendered="#{facultadBean.facultad eq null}">
+                            <f:facet name="header">
+                                <p:outputLabel style="float: left; font-size: 20px !important;" value="#{msg['entidad.facultad']}"/>
+                                <p:commandButton style="float: right;" value="Nuevo" styleClass="hotButton"
+                                                 icon="ui-icon-plus" validateClient="true"
+                                                 update="@form"
+                                                 actionListener="#{facultadBean.nuevo()}"/>
+                            </f:facet>
+                            <p:dataTable
+                                style="width: 100%"
+                                value="#{facultadBean.facultades}" var="ana"
+                                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                rows="15" paginator="true" rowsPerPageTemplate="10,15,20,25,30"
+                                sortBy="#{ana.codFacultad}">
+
+                                <p:column width="30">
+                                    <p:commandButton icon="ui-icon-pencil"
+                                                     actionListener="#{facultadBean.setFacultad(ana)}"
+                                                     update="@form" />
+                                </p:column>
+                                <p:column  headerText="Nombre"
+                                           sortBy="#{ana.nomFacultad}">
+                                    <p:outputLabel value="#{ana.nomFacultad}" />
+                                </p:column>
+                                <p:column  headerText="Estado"
+                                           sortBy="#{ana.estFacultad}">
+                                    <p:outputLabel value="#{ana.estFacultad eq 'A' ? msg['general.administracion.activo']: msg['general.administracion.desactivo']}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+
+                        <p:confirmDialog global="true">
+                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                        <p:panel id="pnlAnalista" style="width: 100%" rendered="#{not empty facultadBean.facultad}">
+                            <f:facet name="header">
+                                <div>
+                                    <p:outputLabel style="float: left; font-size: 20px !important;" value="Crear - #{msg['entidad.facultad']}"
+                                                   rendered="#{(facultadBean.facultad.codFacultad eq null)}" />
+                                    <p:outputLabel style="float: left; font-size: 20px !important;" value="Actualizar - #{msg['entidad.facultad']}"
+                                                   rendered="#{not (facultadBean.facultad.codFacultad  eq null)}" />
+                                    <div style="float: right;">
+                                        <p:commandButton value="#{msg['txt.cancelar']}" immediate="true"
+                                                         update="@form"
+                                                         actionListener="#{facultadBean.setFacultad(null)}"/>
+                                        <p:spacer width="30" height="0" />
+                                        <p:commandButton value="#{msg['txt.suprimir']}" immediate="true"
+                                                         update="@form"
+                                                         rendered="false"
+                                                         actionListener="#{facultadBean.eliminar()}">
+                                            <p:confirm header="Confirmación" message="Esta seguro que desea eliminar este registro?" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <p:spacer width="30" height="0" />
+                                        <p:commandButton value="Aplicar Cambios"
+                                                         styleClass="hotButton" icon="ui-icon-disk"
+                                                         update="@form"
+                                                         action="#{facultadBean.aplicarCambios()}"/>
+                                    </div>
+                                    <div style="clear: both;"></div>
+                                </div>
+                            </f:facet>
+                            <p:panelGrid columns="2">
+
+
+                                <p:outputLabel for="anaNombre" value="Nombre: " />
+                                <p:inputText id="anaNombre" style="width:300px" disabled="false" value="#{facultadBean.facultad.nomFacultad}"
+                                             required="true" requiredMessage="El campo Nombre es obligatorio." />
+
+                                <p:outputLabel for="anaEstado" value="Estado: " />
+                                <p:selectOneMenu required="true" id="anaEstado" 
+                                                 requiredMessage="El campo Estado es obligatorio."
+                                                 style="width: 100%" value="#{facultadBean.facultad.estFacultad}">
+                                    <f:selectItem  itemLabel="[NINGUNO]" itemValue=""></f:selectItem>
+                                    <f:selectItem  itemLabel="#{msg['general.administracion.activo']}" itemValue="A"></f:selectItem>
+                                    <f:selectItem  itemLabel="#{msg['general.administracion.desactivo']}" itemValue="D"></f:selectItem>
+                                    <p:message for="anaEstado" />
+                                </p:selectOneMenu>
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </f:view>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

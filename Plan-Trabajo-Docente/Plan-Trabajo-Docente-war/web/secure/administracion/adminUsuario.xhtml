@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+Nombre: adminAlimento. 
+Descripción:Gestionar los usuarios.
+Realizado Por: Jorge Armando Montoya Jaramillo.
+Fecha: 13/10/2014
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="/WEB-INF/templates/plan-default-template.xhtml"  >
+            <ui:param name="paramMenuTab" value="1" />
+            <ui:define name="title">
+                #{msg['txt.plan']} - #{msg['entidad.usuario']}
+            </ui:define>
+
+            <ui:define name="breadCrumb">
+                <p:breadCrumb homeDisplay="text">
+                    <p:menuitem icon="ui-icon-home" outcome="/secure/inicio" />
+                    <p:menuitem value="#{msg['administracion.ruta.usuario']}"
+                                url="#" />
+                </p:breadCrumb>
+            </ui:define>
+
+            <ui:define name="content" >
+                <f:view>
+                    <h:form>
+                        <p:panel id="resultados"  style="width: 100%" rendered="#{usuarioBean.usu eq null}">
+                            <f:facet name="header">
+                                <p:outputLabel style="float: left; font-size: 20px !important;" value="#{msg['entidad.usuario']}"/>
+                                <p:commandButton style="float: right;" value="Nuevo" styleClass="hotButton"
+                                                 icon="ui-icon-plus" validateClient="true"
+                                                 update="@form"
+                                                 actionListener="#{usuarioBean.nuevoUsu()}"/>
+                            </f:facet>
+                            <p:dataTable
+                                style="width: 100%" id="tablaUsuarios"
+                                value="#{usuarioBean.usuarios}" var="usuario"
+                                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                rows="15" paginator="true" rowsPerPageTemplate="10,15,20,25,30"
+                                sortBy="#{usuario.codigoUsuario}">
+
+                                <p:column width="30">
+                                    <p:commandButton icon="ui-icon-pencil"
+                                                     actionListener="#{usuarioBean.setUsu(usuario)}"
+                                                     update="@form" />
+                                </p:column>
+                                <p:column  headerText="Nombres">
+                                    <p:outputLabel value="#{usuario.nombreUsuario}" />
+                                </p:column>
+                                <p:column  headerText="Apellidos">
+                                    <p:outputLabel value="#{usuario.apellidoUsuario}" />
+                                </p:column>
+                                <p:column  headerText="Correo">
+                                    <p:outputLabel value="#{usuario.correoUsuario}" />
+                                </p:column>
+                                <p:column  headerText="Documento">
+                                    <p:outputLabel value="#{usuario.documentoUsuario}" />
+                                </p:column>
+                                <p:column  headerText="Estado">
+                                    <p:outputLabel value="#{usuario.usuEstado eq '1' ? 'Activo': 'Inactivo'}"/>
+                                </p:column>
+                                <p:column  headerText="Cargo">
+                                    <p:outputLabel value="#{usuario.cargoUsuario.nombreCargo}" />
+                                </p:column>
+                                <p:column  headerText="Fecha Ingreso">
+                                    <p:outputLabel value="#{usuario.fechaIngresoUsuario}">
+                                        <f:convertDateTime locale="es_ES" pattern="dd/MM/yyyy" timeZone="GMT-5" /> 
+                                    </p:outputLabel>
+                                </p:column>
+                                <f:facet name="footer">
+                                    <p:commandButton value="Exportar A CSV" ajax="false" 
+                                                     action="#{usuarioBean.descargarCSV('tablaUsuarios', 'Usuarios Plan de Trabajo Docente')}" />
+                                </f:facet>
+                            </p:dataTable>
+                        </p:panel>
+
+                        <p:confirmDialog global="true">
+                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+                        <p:panel id="pnlCiudad" style="width: 100%" rendered="#{not empty usuarioBean.usu}">
+                            <f:facet name="header">
+                                <div>
+                                    <p:outputLabel style="float: left; font-size: 20px !important;" value="Crear - #{msg['entidad.usuario']}"
+                                                   rendered="#{(usuarioBean.usu.codigoUsuario eq null)}" />
+                                    <p:outputLabel style="float: left; font-size: 20px !important;" value="Actualizar - #{msg['entidad.usuario']}"
+                                                   rendered="#{not (usuarioBean.usu.codigoUsuario eq null)}" />
+                                    <div style="float: right;">
+                                        <p:commandButton value="Cancelar" immediate="true"
+                                                         update="@form"
+                                                         actionListener="#{usuarioBean.setUsu(null)}"/>
+                                        <p:spacer width="30" height="0" />
+                                        <p:commandButton value="#{msg['txt.suprimir']}" immediate="true"
+                                                         update="@form"
+                                                         rendered="#{not (usuarioBean.usu.codigoUsuario eq null)}"
+                                                         actionListener="#{usuarioBean.eliminarUsu()}">
+                                            <p:confirm header="Confirmación" message="Esta seguro que desea eliminar este usuario?" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <p:spacer width="30" height="0" />
+                                        <p:commandButton value="Aplicar Cambios"
+                                                         styleClass="hotButton" icon="ui-icon-disk"
+                                                         update="@form"
+                                                         actionListener="#{usuarioBean.aplicarCambiosUsu()}"/>
+                                    </div>
+                                    <div style="clear: both;"></div>
+                                </div>
+                            </f:facet>
+                            <p:panelGrid columns="2">
+
+                                <p:outputLabel for="descripcionCargo" value="Nombres:" />
+                                <p:inputText id="descripcionCargo" value="#{usuarioBean.usu.nombreUsuario}"
+                                             required="true" requiredMessage="El campo Nombres es obligatorio." />
+
+                                <p:outputLabel for="Apellidos" value="Apellidos:" />
+                                <p:inputText id="Apellidos" value="#{usuarioBean.usu.apellidoUsuario}"
+                                             required="true" requiredMessage="El campo  Apellidos es obligatorio." />
+
+                                <p:outputLabel for="Correo" value="Correo:" />
+                                <p:inputText id="Correo" value="#{usuarioBean.usu.correoUsuario}"
+                                             requiredMessage="El campo Correo es obligatorio." style="width: 300px" 
+                                             validatorMessage="Formato inválido de correo"
+                                             required="true">
+                                    <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                </p:inputText>
+
+                                <p:outputLabel for="Documento" value="Documento:" />
+                                <p:inputText id="Documento" value="#{usuarioBean.usu.documentoUsuario}"
+                                             required="true" requiredMessage="El campo Documento es obligatorio." />
+
+                                <p:outputLabel for="Contraseña" value="Contraseña:" />
+                                <p:inputText id="Contraseña" value="#{usuarioBean.usu.passwordUsuario}"
+                                             required="true" requiredMessage="El campo Contraseña es obligatorio." />
+
+                                <p:outputLabel for="fecha" value="Fecha Ingreso:" />
+                                <p:calendar id="fecha" required="true" requiredMessage="El campo Fecha Ingreso  es obligatorio." 
+                                            style="width: 300px" value="#{usuarioBean.usu.fechaIngresoUsuario}" navigator="true" pattern="dd-MM-yyyy" />
+
+                                <p:outputLabel for="usuEstado" value="Estado:" />
+                                <p:selectOneMenu required="true" id="usuEstado" 
+                                                 requiredMessage="El campo Estado es obligatorio."
+                                                 style="width: 100%" value="#{usuarioBean.usu.usuEstado}">
+                                    <f:selectItem  itemLabel="[NINGUNO]" itemValue=""></f:selectItem>
+                                    <f:selectItem  itemLabel="Activo" itemValue="1"></f:selectItem>
+                                    <f:selectItem  itemLabel="Inactivo" itemValue="0"></f:selectItem>
+                                    <p:message for="usuEstado" />
+                                </p:selectOneMenu>
+
+                                <p:outputLabel for="cargos" value="Cargo:" />
+                                <p:selectOneMenu  id="cargos"  required="true"
+                                                  requiredMessage="El campo Cargo es obligatorio" 
+                                                  value="#{usuarioBean.usu.cargoUsuario}"
+                                                  converter="#{usuarioBean.cargoConverter}"
+                                                  panelStyle="width:300px" effect="fade" style="width:300px"
+                                                  filter="true" filterMatchMode="contains">
+                                    <f:selectItem  itemLabel="[NINGUNO]" itemValue=""></f:selectItem>
+                                    <f:selectItems value="#{usuarioBean.cargos}" var="car" itemValue="#{car}" itemLabel="#{car.nombreCargo}"  />
+                                    <p:message for="cargos" />
+                                </p:selectOneMenu>
+
+
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </f:view>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

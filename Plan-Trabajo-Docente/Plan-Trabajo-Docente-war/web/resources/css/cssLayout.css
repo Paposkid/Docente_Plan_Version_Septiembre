@@ -1,0 +1,116 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Nov 24, 2014, 7:06:38 PM
+    Author     : 727855
+*/
+
+.divBarraBotones{
+    text-align: right;
+    background: #CC0000;
+    size: auto;
+    width:auto;
+    border-radius: 6px;
+    border: 1px solid #E3A1A1;
+    } 
+
+.divBarraBotones .alinearIzquierdaCorto{
+    text-align: left;
+    color: white;
+    font-family: "Arial", sans-serif;
+    font-size: 0.9em;
+    font-weight: bold;
+    display: inline-table;
+    margin-right: 79%;
+    }
+
+.divBarraBotones .alinearIzquierdaLargo {
+    text-align: left;
+    color: white;
+    font-weight: bold;
+    display: inline-table;
+    margin-right: 70%;
+}
+
+.divBarraBotones .alinearIzquierdaSoloTexto {
+    text-align: left;
+    color: white;
+    font-weight: bold;
+    display: inline-table;
+    margin-right: 87%;
+}
+.divBarraBotones .alinearIzquierdaTexto {
+    text-align: left;
+    color: white;
+    font-weight: bold;
+    display: inline-table;
+    margin-right: 80%;
+}
+
+
+.divBarraBotones .alinearIzquierdaLargo1Boton {
+    text-align: left;
+    color: white;
+    font-weight: bold;
+    display: inline-table;
+    margin-right: 89%;
+}
+
+
+.divBarraBotones .alinearIzquierdaLargoBotones {
+    text-align: left;
+    color: white;
+    font-weight: bold;
+    display: inline-table;
+    margin-right: 69%;
+}
+
+.divBarraBotones .alinearIzquierdaLargo3Boton {
+    text-align: left;
+    color: white;
+    font-weight: bold;
+    display: inline-table;
+    margin-right: 900px;
+}
+
+.divBotones{
+    text-align: right;
+    background: #CC0000;
+    size: auto;
+    width:99%;
+    padding: 5px 5px 7px 5px;
+    
+}
+    
+.divBotones .botton{
+    border: 1px solid #d8dcdf;
+    background: #eeeeee url("/SAC-web/faces/javax.faces.resource/images/ui-bg_highlight-hard_100_eeeeee_1x100.png?ln=primefaces-clarosactheme") 50% 50% repeat-x;
+    font-weight: bold;
+    color: #004276;
+}
+
+.bottonExt{
+    border: 1px solid #d8dcdf;
+    background: #eeeeee;
+    font-weight: bold;
+    color: #004276;
+}
+
+/******************************
+* Estilos para la tabla cargue de
+* suministro cargar archivo
+*********************************/
+.tablaCargue{
+    margin: 0 auto;
+}
+
+/******************************
+* Estilos para la tabla proceso en la
+* pantalla cargue guia de suministros
+*********************************/
+.estiloProcesoGuia{
+    font-weight: bold;
+}

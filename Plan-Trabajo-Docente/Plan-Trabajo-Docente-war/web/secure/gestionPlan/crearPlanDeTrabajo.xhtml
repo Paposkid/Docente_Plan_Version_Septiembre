@@ -1,0 +1,520 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+Nombre: crearPlanDeTrabajo. 
+Descripción:Se crea el plan de trabajo para cada docente por semestre.
+Realizado Por: Jorge Armando Montoya Jaramillo.
+Correo: paposkid@gmail.com
+Fecha: 19/04/2015
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="/WEB-INF/templates/plan-default-template.xhtml">
+            <ui:param name="paramMenuTab" value="1" />
+            <ui:define name="title">
+                #{msg['txt.plan']} - Crear Plan
+            </ui:define>
+
+            <ui:define name="breadCrumb">
+                <p:breadCrumb homeDisplay="text">
+                    <p:menuitem icon="ui-icon-home" outcome="/secure/inicio" />
+                    <p:menuitem value="Plan de Trabajo / Crear Plan" 
+                                url="#" />
+                </p:breadCrumb>
+            </ui:define>
+
+            <ui:define name="content" >
+                <f:view>
+
+                    <h:form id="formPricipal">
+
+                        <p:growl id="growl" sticky="true" showDetail="true"/>
+
+                        <p:wizard nextLabel="Siguiente" backLabel="Atrás" style="background: whitesmoke"   flowListener="#{crearPlanBean.onFlowProcess}">
+
+                            <p:tab id="docenciaDirecta" title="DOCENCIA ">
+                                <p:panel  id="docDirecPanel" header="Docencia Directa Detalle">
+                                    <h:panelGrid id="panelDocenciaDirecta" columns="10" columnClasses="label, value">
+
+                                        <p:outputLabel for="codMateria" value="Asignaturta" />
+                                        <p:selectOneMenu  id="codMateria"  required="false"
+                                                          requiredMessage="El campo Asignatura es obligatorio" 
+                                                          value="#{crearPlanBean.docenciaDirecta.codMateria}"
+                                                          converter="#{crearPlanBean.materiaConverter}"
+                                                          immediate="true"
+                                                          panelStyle="width:300px" effect="fade" style="width:200px"
+                                                          filter="true" filterMatchMode="contains">
+                                            <f:selectItem  itemLabel="[NINGUNO]" itemValue=""></f:selectItem>
+                                            <f:selectItems value="#{crearPlanBean.materias}" var="materia" itemValue="#{materia}" itemLabel="#{materia.nomMateria}" />
+                                            <f:ajax render="renderNombreMateria panelDocenciaDirecta"/>
+                                            <p:message for="codMateria" />
+                                        </p:selectOneMenu>                                 
+
+                                        <p:outputLabel  value="Código Curso:" />
+                                        <p:inputText  id="renderNombreMateria"  value="#{crearPlanBean.docenciaDirecta.codMateria.matCodigoMateria eq null ? '0' : crearPlanBean.docenciaDirecta.codMateria.matCodigoMateria}" readonly="true"/>
+
+                                        <p:outputLabel  value="Grupo:" />
+                                        <p:inputText id="grupo" value="#{crearPlanBean.docenciaDirecta.grupo}" required="false" />
+
+                                        <p:outputLabel  value="Numero Estudiantes: " />
+                                        <p:inputText id="nmrEstudiantes" value="#{crearPlanBean.docenciaDirecta.nmrEstudiantes}" required="false" />
+
+                                        <p:outputLabel  value="Hora Semanal: " />
+                                        <p:inputText id="horSemanal" value="#{crearPlanBean.docenciaDirecta.horSemanal}" required="false" />
+
+                                        <p:outputLabel  value="Agregar Curso: " />
+                                        <p:commandButton id="btnAgregarMateria" update="@form:docDirecPanel"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarMateria()}" />
+
+                                        <h:outputText value="Saltar al Final: " />
+                                        <h:selectBooleanCheckbox value="#{crearPlanBean.skip}" />
+
+                                    </h:panelGrid>
+
+                                    <p:dataTable
+                                        style="width: 100%"
+                                        value="#{crearPlanBean.listDocenciaDirecta}" var="docDirecta"
+                                        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                        rows="5" paginator="true" rowsPerPageTemplate="5,10"  rendered="#{not empty crearPlanBean.listDocenciaDirecta}"
+                                        sortBy="#{docDirecta.horSemanal}">
+
+                                        <p:column width="30">
+                                            <p:commandButton icon="ui-icon-pencil" immediate="true">
+                                                <f:setPropertyActionListener target="#{crearPlanBean.docenciaDirecta}" value="#{docDirecta}"/>
+                                                <f:ajax render=":formPricipal:docDirecPanel" />
+                                            </p:commandButton>
+                                        </p:column>
+                                        <p:column width="30">
+                                             <p:commandButton id="btnEliminarMateria" update="@form:docDirecPanel"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarMateria(docDirecta)}" />
+                                        </p:column>
+                                        <p:column  headerText="Nombre Materia"
+                                                   sortBy="#{docDirecta.codMateria.nomMateria}">
+                                            <p:outputLabel value="#{docDirecta.codMateria.nomMateria}" />
+                                        </p:column>
+
+                                        <p:column  headerText="Código Curso"
+                                                   sortBy="#{docDirecta.codMateria.matCodigoMateria}">
+                                            <p:outputLabel value="#{docDirecta.codMateria.matCodigoMateria}" />
+                                        </p:column>
+
+                                        <p:column  headerText="Grupo"
+                                                   sortBy="#{docDirecta.grupo}">
+                                            <p:outputLabel value="#{docDirecta.grupo}" />
+                                        </p:column>
+                                        <p:column  headerText="Número Estudiantes"
+                                                   sortBy="#{docDirecta.nmrEstudiantes}">
+                                            <p:outputLabel value="#{docDirecta.nmrEstudiantes}" />
+                                        </p:column>
+                                        <p:column  headerText="Hora Semanal"
+                                                   sortBy="#{docDirecta.horSemanal}">
+                                            <p:outputLabel value="#{docDirecta.horSemanal}" />
+                                        </p:column>
+                                    </p:dataTable>
+
+                                </p:panel>
+                            </p:tab>
+
+                            <p:tab id="investigacion" title="INVESTIGACIÓN">
+                                <p:panel id="panelInvestigacion" header="Investigación Detalle">
+                                    <h:panelGrid columns="10" columnClasses="label, value">
+                                        <p:outputLabel   value="Nombre Semillero: " />
+                                        <p:inputText  value="#{crearPlanBean.investigacion.nomSemillero}" />
+
+                                        <p:outputLabel  value="Tipo de Vinculo: " />
+                                        <p:selectOneMenu  style="width: 150px" value="#{crearPlanBean.investigacion.tipVinculo}">
+                                            <f:selectItem  itemLabel="[NINGUNO]" itemValue="NINGUNO"></f:selectItem>
+                                            <f:selectItem  itemLabel="DIRECTOR" itemValue="DIRECTOR"></f:selectItem>
+                                            <f:selectItem  itemLabel="MIEMBRO" itemValue="MIEMBRO"></f:selectItem>
+                                            <p:message for="investigaciontipVinculo" />
+                                        </p:selectOneMenu>
+
+                                        <p:outputLabel  value="Actividad Desarrollada: " />
+                                        <p:inputText  value="#{crearPlanBean.investigacion.actDesarrollada}" />
+
+                                        <p:outputLabel  value="Productos para cada Actividad: " />
+                                        <p:inputText  value="#{crearPlanBean.investigacion.actProductos}" />
+
+                                        <p:outputLabel  value="Hora Semanal: " />
+                                        <p:inputText  value="#{crearPlanBean.investigacion.horSemanal}" />
+
+                                        <p:outputLabel  value="Agregar Investigación: " />
+                                        <p:commandButton  update="@form:panelInvestigacion"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarInvestigacion()}" />
+
+                                        <p:outputLabel value="Saltar al Final: " />
+                                        <h:selectBooleanCheckbox value="#{crearPlanBean.skip}" />
+                                    </h:panelGrid>
+                                    <p:dataTable style="width: 100%"
+                                                 value="#{crearPlanBean.investigaciones}" var="invest"
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 rows="15" paginator="true" rowsPerPageTemplate="5,10"  rendered="#{not empty crearPlanBean.investigaciones}"
+                                                 sortBy="#{invest.horSemanal}">
+
+                                        <p:column width="30">
+                                            <p:commandButton icon="ui-icon-pencil" immediate="true">
+                                                <f:setPropertyActionListener target="#{crearPlanBean.investigacion}" value="#{invest}"/>
+                                                <f:ajax render=":formPricipal:panelInvestigacion" />
+                                            </p:commandButton>
+                                        </p:column>
+                                        <p:column width="30">
+                                             <p:commandButton id="btnEliminarInvestigacion" update="@form:panelInvestigacion"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarInvestigacion(invest)}" />
+                                        </p:column>
+                                        <p:column  headerText="Nombre Semillero"
+                                                   sortBy="#{invest.nomSemillero}">
+                                            <p:outputLabel value="#{invest.nomSemillero}" />
+                                        </p:column>
+                                        <p:column  headerText="Tipo de Vinculo"
+                                                   sortBy="#{invest.tipVinculo}">
+                                            <p:outputLabel value="#{invest.tipVinculo}" />
+                                        </p:column>
+                                        <p:column  headerText="Actividad Desarrollada"
+                                                   sortBy="#{invest.actDesarrollada}">
+                                            <p:outputLabel value="#{invest.actDesarrollada}" />
+                                        </p:column>
+                                        <p:column  headerText="Productos para cada Actividad"
+                                                   sortBy="#{invest.actProductos}">
+                                            <p:outputLabel value="#{invest.actProductos}" />
+                                        </p:column>
+                                        <p:column  headerText="Hora Semanal"
+                                                   sortBy="#{invest.horSemanal}">
+                                            <p:outputLabel value="#{invest.horSemanal}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                            </p:tab>
+
+                            <p:tab id="extension" title="EXTENSIÓN ">
+                                <p:panel id="panelactExtension" header="ACTIVIDADES DE EXTENSIÓN ACADÉMICAS Y/O PROYECCIÓN SOCIAL DETALLE">
+                                    <h:panelGrid id="pgextAct" columns="10" columnClasses="label, value">
+
+                                        <p:outputLabel  value="Nombre Actividad: " />
+                                        <p:inputText id="actExtAcademicanomActividad" value="#{crearPlanBean.actExtAcademica.nomActividad}" />
+
+                                        <p:outputLabel  value="Fecha Inicio: " />
+                                        <p:calendar id="actExtAcademicafecInicio" style="width: 100%"
+                                                    value="#{crearPlanBean.actExtAcademica.fecInicio}" navigator="true" pattern="dd/MM/yyyy" />
+
+                                        <p:outputLabel  value="Fecha Fin: " />
+                                        <p:calendar id="actExtAcademicafec" style="width: 100%"
+                                                    value="#{crearPlanBean.actExtAcademica.fec}" navigator="true" pattern="dd/MM/yyyy" />
+
+
+                                        <p:outputLabel  value="Tiempo Dedicación: " />
+                                        <p:inputText id="actExtAcademicahorDedicadas" value="#{crearPlanBean.actExtAcademica.horDedicadas}"/>
+
+                                        <p:outputLabel  value="Agregar act de extensión " />
+                                        <p:commandButton  update="@form:panelactExtension"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarExtension()}" />
+
+                                        <p:outputLabel value="Saltar al Final: " />
+                                        <h:selectBooleanCheckbox value="#{crearPlanBean.skip}" />
+                                    </h:panelGrid>
+                                    <p:dataTable style="width: 100%"
+                                                 value="#{crearPlanBean.listActExtAcademicas}" var="extAcademica"
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 rows="5" paginator="true" rowsPerPageTemplate="5,10"  rendered="#{not empty crearPlanBean.listActExtAcademicas}"
+                                                 sortBy="#{extAcademica.horDedicadas}">
+
+                                        <p:column width="30">
+                                            <p:commandButton icon="ui-icon-pencil" immediate="true">
+                                                <f:setPropertyActionListener target="#{crearPlanBean.actExtAcademica}" value="#{extAcademica}"/>
+                                                <f:ajax render=":formPricipal:pgextAct" />
+                                            </p:commandButton>
+                                        </p:column>
+                                         <p:column width="30">
+                                             <p:commandButton id="btnEliminarExtension" update="@form:panelactExtension"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarExtension(extAcademica)}" />
+                                        </p:column>
+                                        <p:column  headerText="Nombre Actividad"
+                                                   sortBy="#{extAcademica.nomActividad}">
+                                            <p:outputLabel value="#{extAcademica.nomActividad}" />
+                                        </p:column>
+                                        <p:column  headerText="Fecha Inicio"
+                                                   sortBy="#{extAcademica.fecInicio}">
+                                            <p:outputLabel value="#{extAcademica.fecInicio}" >
+                                                <f:convertDateTime locale="es_CO" pattern="dd/MM/yyyy" timeZone="GMT-5" />
+                                            </p:outputLabel>
+                                        </p:column>
+
+                                        <p:column  headerText="Fecha Fin"
+                                                   sortBy="#{extAcademica.fec}">
+                                            <p:outputLabel value="#{extAcademica.fec}" >
+                                                <f:convertDateTime locale="es_CO" pattern="dd/MM/yyyy" timeZone="GMT-5" />
+                                            </p:outputLabel>
+                                        </p:column>
+
+                                        <p:column  headerText="Horas Dedicadas"
+                                                   sortBy="#{extAcademica.horDedicadas}">
+                                            <p:outputLabel value="#{extAcademica.horDedicadas}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                            </p:tab>
+
+                            <p:tab id="comision" title="COMISIÓN">
+                                <p:panel id="panelactComision" header="COMISIÓN DE ESTUDIOS DETALLE">
+                                    <h:panelGrid id="pgcomision" columns="10" columnClasses="label, value">
+
+                                        <p:outputLabel  value="Universidad/Centro de Estudio: " />
+                                        <p:inputText id="cenEstudio" value="#{crearPlanBean.comisionEstudio.cenEstudio}" />
+
+                                        <p:outputLabel  value="Tipo de Estudio: " />
+                                        <p:selectOneMenu  style="width: 150px" value="#{crearPlanBean.comisionEstudio.tipEstudio}">
+                                            <f:selectItem  itemLabel="[NINGUNO]" itemValue="NINGUNO"></f:selectItem>
+                                            <f:selectItem  itemLabel="ESPECIALIZACIÓN" itemValue="ESPECIALIZACIÓN"></f:selectItem>
+                                            <f:selectItem  itemLabel="MAESTRIA" itemValue="MAESTRIA"></f:selectItem>
+                                            <f:selectItem  itemLabel="DOCTORADO" itemValue="DOCTORADO"></f:selectItem>
+                                            <f:selectItem  itemLabel="OTRO" itemValue="OTRO"></f:selectItem>
+                                            <p:message for="tipEstudio" />
+                                        </p:selectOneMenu>
+
+                                        <p:outputLabel  value="Nombre Específico del Estudio: " />
+                                        <p:inputText id="nomEspecEstudio" value="#{crearPlanBean.comisionEstudio.nomEspecEstudio}"/>
+
+                                        <p:outputLabel  value="Fecha Inicio: " />
+                                        <p:calendar id="comisionEstudiofecInicio" style="width: 100%"
+                                                    value="#{crearPlanBean.comisionEstudio.fecInicio}" navigator="true" pattern="dd/MM/yyyy" />
+
+                                        <p:outputLabel  value="Fecha Graduación: " />  
+                                        <p:calendar id="comisionEstudiofecGraduacion" style="width: 100%"
+                                                    value="#{crearPlanBean.comisionEstudio.fecGraduacion}" navigator="true" pattern="dd/MM/yyyy" />
+
+                                        <p:outputLabel  value="Fecha Obtención de Autorización: " />  
+                                        <p:calendar id="fecObtencionAutorizacion" style="width: 100%"
+                                                    value="#{crearPlanBean.comisionEstudio.fecObtencionAutorizacion}" navigator="true" pattern="dd/MM/yyyy" />
+
+                                        <p:outputLabel  value="Aportes institucionales obtenidos y/o esperados: " />
+                                        <p:inputText id="aporte" value="#{crearPlanBean.comisionEstudio.aporte}"/>
+
+                                        <p:outputLabel  value="Tiempo Dedicación: " />
+                                        <p:inputText id="comisionEstudiohorDedicadas" value="#{crearPlanBean.comisionEstudio.horDedicadas}"/>
+
+                                        <p:outputLabel  value="Agregar Comisión: " />
+                                        <p:commandButton  update="@form:panelactComision"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarComision()}" />
+
+                                        <p:outputLabel value="Saltar al Final: " />
+                                        <h:selectBooleanCheckbox value="#{crearPlanBean.skip}" />
+                                    </h:panelGrid>
+                                    <p:dataTable style="width: 100%"
+                                                 value="#{crearPlanBean.listComisionEstudios}" var="comision"
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 rows="5" paginator="true" rowsPerPageTemplate="5,10"  rendered="#{not empty crearPlanBean.listComisionEstudios}"
+                                                 sortBy="#{comision.horDedicadas}">
+
+                                        <p:column width="30">
+                                            <p:commandButton icon="ui-icon-pencil" immediate="true">
+                                                <f:setPropertyActionListener target="#{crearPlanBean.comisionEstudio}" value="#{comision}"/>
+                                                <f:ajax render=":formPricipal:panelactComision" />
+                                            </p:commandButton>
+                                        </p:column>
+                                        <p:column width="30">
+                                             <p:commandButton id="btnEliminarComision" update="@form:panelactComision"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarComision(comision)}" />
+                                        </p:column>
+                                        <p:column  headerText="Nombre Específico del Estudio"
+                                                   sortBy="#{comision.nomEspecEstudio}">
+                                            <p:outputLabel value="#{comision.nomEspecEstudio}" />
+                                        </p:column>
+                                        <p:column  headerText="Fecha Inicio"
+                                                   sortBy="#{comision.fecInicio}">
+                                            <p:outputLabel value="#{comision.fecInicio}" >
+                                                <f:convertDateTime locale="es_CO" pattern="dd/MM/yyyy" timeZone="GMT-5" />
+                                            </p:outputLabel>
+                                        </p:column>
+                                        <p:column  headerText="Fecha Graduacion"
+                                                   sortBy="#{comision.fecGraduacion}">
+                                            <p:outputLabel value="#{comision.fecGraduacion}" >
+                                                <f:convertDateTime locale="es_CO" pattern="dd/MM/yyyy" timeZone="GMT-5" />
+                                            </p:outputLabel>
+                                        </p:column>
+
+                                        <p:column  headerText="Fecha Obtención de Autorización"
+                                                   sortBy="#{comision.fecObtencionAutorizacion}">
+                                            <p:outputLabel value="#{comision.fecObtencionAutorizacion}" >
+                                                <f:convertDateTime locale="es_CO" pattern="dd/MM/yyyy" timeZone="GMT-5" />
+                                            </p:outputLabel>
+                                        </p:column>
+                                        <p:column  headerText="Aportes institucionales obtenidos y/o esperados"
+                                                   sortBy="#{comision.aporte}">
+                                            <p:outputLabel value="#{comision.aporte}" />
+                                        </p:column>
+                                        <p:column  headerText="Horas Dedicadas"
+                                                   sortBy="#{comision.horDedicadas}">
+                                            <p:outputLabel value="#{comision.horDedicadas}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                            </p:tab>
+
+                            <p:tab id="tabPublicaciones" title="PUBLICACIONES ">
+                                <p:panel id="panelPublicacion" header="PUBLICACIONES DETALLE">
+                                    <h:panelGrid id="pgpublicacion" columns="10" columnClasses="label, value">
+
+                                        <p:outputLabel  value="Nombre del artículo, texto, entre otros: " />
+                                        <p:inputText id="nomArticulo" value="#{crearPlanBean.publicacion.nomArticulo}" />
+
+                                        <p:outputLabel  value="Autor Principal: " />
+                                        <p:inputText id="autPrincipal" style="width: 100%"
+                                                     value="#{crearPlanBean.publicacion.autPrincipal}" />
+
+                                        <p:outputLabel  value="Co-Autor: " />
+                                        <p:inputText id="coautor" style="width: 100%"
+                                                     value="#{crearPlanBean.publicacion.coautor}"  />
+
+                                        <p:outputLabel  value="Tema Principal: " />
+                                        <p:inputText id="temPrincipal" style="width: 100%"
+                                                     value="#{crearPlanBean.publicacion.temPrincipal}"  />
+
+                                        <p:outputLabel  value="Tiempo Dedicación: " />
+                                        <p:inputText id="publicacionhorDedicadas" value="#{crearPlanBean.publicacion.horDedicadas}"/>
+
+                                        <p:outputLabel  value="Agregar Publicación " />
+                                        <p:commandButton  update=":formPricipal:panelPublicacion"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarPublicacon()}" />
+
+                                        <p:outputLabel value="Saltar al Final: " />
+                                        <h:selectBooleanCheckbox value="#{crearPlanBean.skip}" />
+                                    </h:panelGrid>
+                                    <p:dataTable style="width: 100%"
+                                                 value="#{crearPlanBean.listPublicaciones}" var="publicacion"
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 rows="5" paginator="true" rowsPerPageTemplate="5,10"  rendered="#{not empty crearPlanBean.listPublicaciones}"
+                                                 sortBy="#{publicacion.horDedicadas}">
+
+                                        <p:column width="30">
+                                            <p:commandButton icon="ui-icon-pencil" immediate="true">
+                                                <f:setPropertyActionListener target="#{crearPlanBean.publicacion}"  value="#{publicacion}"/>
+                                                <f:ajax render=":formPricipal:panelPublicacion" />
+                                            </p:commandButton>
+                                        </p:column>
+                                        <p:column width="30">
+                                             <p:commandButton id="btnEliminarPublicacion" update="@form:panelPublicacion"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarPublicacion(publicacion)}" />
+                                        </p:column>
+                                        <p:column  headerText="Nombre del artículo"
+                                                   sortBy="#{publicacion.nomArticulo}">
+                                            <p:outputLabel value="#{publicacion.nomArticulo}" />
+                                        </p:column>
+                                        <p:column  headerText="Autor Principal"
+                                                   sortBy="#{publicacion.autPrincipal}">
+                                            <p:outputLabel value="#{publicacion.autPrincipal}" >
+                                            </p:outputLabel>
+                                        </p:column>
+                                        <p:column  headerText="Co-Autor"
+                                                   sortBy="#{publicacion.coautor}">
+                                            <p:outputLabel value="#{publicacion.coautor}" >
+                                            </p:outputLabel>
+                                        </p:column>
+                                        <p:column  headerText="Tema Principal"
+                                                   sortBy="#{publicacion.temPrincipal}">
+                                            <p:outputLabel value="#{publicacion.temPrincipal}" />
+                                        </p:column>
+                                        <p:column  headerText="Horas Dedicadas"
+                                                   sortBy="#{publicacion.horDedicadas}">
+                                            <p:outputLabel value="#{publicacion.horDedicadas}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                            </p:tab>
+
+                            <p:tab id="tabAsesorias" title="ASESORÍAS">
+                                <p:panel id="panelAsesroias" header="ASESORÍAS EN PROYECTOS Y TRABAJOS DE GRADO DETALLE">
+                                    <h:panelGrid id="pgAsesorias" columns="10" columnClasses="label, value">
+
+                                        <p:outputLabel  value="Integrantes del Equipo: " />
+                                        <p:inputText id="asenomEstudiante" value="#{crearPlanBean.asesoriaProyecto.nomEstudiante}" />
+
+                                        <p:outputLabel  value="Título: " />
+                                        <p:inputText id="asesoriaProyectotitulo" style="width: 100%"
+                                                     value="#{crearPlanBean.asesoriaProyecto.titulo}" />
+
+                                        <p:outputLabel  value="Aspectos Relevantes: " />
+                                        <p:inputText id="aspRelevante" style="width: 100%"
+                                                     value="#{crearPlanBean.asesoriaProyecto.aspRelevante}"  />
+
+                                        <p:outputLabel  value="Tiempo Dedicación: " />
+                                        <p:inputText id="asehorDedicadas" value="#{crearPlanBean.asesoriaProyecto.horDedicadas}"/>
+
+                                        <p:outputLabel  value="Agregar Asesoría " />
+                                        <p:commandButton  update=":formPricipal:panelAsesroias"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarAsesorias()}" />
+
+                                        <p:outputLabel value="Saltar al Final: " />
+                                        <h:selectBooleanCheckbox value="#{crearPlanBean.skip}" />
+                                    </h:panelGrid>
+                                    <p:dataTable style="width: 100%"
+                                                 value="#{crearPlanBean.listAsesoriaProyectos}" var="asesoria"
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 rows="5" paginator="true" rowsPerPageTemplate="5,10"  rendered="#{not empty crearPlanBean.listAsesoriaProyectos}"
+                                                 sortBy="#{asesoria.horDedicadas}">
+
+                                        <p:column width="30">
+                                            <p:commandButton icon="ui-icon-pencil" immediate="true">
+                                                <f:setPropertyActionListener target="#{crearPlanBean.asesoriaProyecto}"  value="#{asesoria}"/>
+                                                <f:ajax render=":formPricipal:panelAsesroias" />
+                                            </p:commandButton>
+                                        </p:column>
+                                        <p:column width="30">
+                                             <p:commandButton id="btnEliminarAsesorias" update="@form:panelAsesroias"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarAsesoria()}" />
+                                        </p:column>
+                                        <p:column  headerText="Integrantes del Equipo"
+                                                   sortBy="#{asesoria.nomEstudiante}">
+                                            <p:outputLabel value="#{asesoria.nomEstudiante}" />
+                                        </p:column>
+                                        <p:column  headerText="Título"
+                                                   sortBy="#{asesoria.titulo}">
+                                            <p:outputLabel value="#{asesoria.titulo}" >
+                                            </p:outputLabel>
+                                        </p:column>
+                                        <p:column  headerText="Aspectos Relevantes"
+                                                   sortBy="#{asesoria.aspRelevante}">
+                                            <p:outputLabel value="#{asesoria.aspRelevante}" >
+                                            </p:outputLabel>
+                                        </p:column>
+                                        <p:column  headerText="Horas Dedicadas"
+                                                   sortBy="#{asesoria.horDedicadas}">
+                                            <p:outputLabel value="#{asesoria.horDedicadas}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                            </p:tab>
+
+                            <p:tab id="tabConfirmacion" title="CONFIRMACIÓN DEL PLAN">
+                                <p:panel header="Confirmación del Plan De Trabajo">
+                                    <h:panelGrid id="confirmation" columns="3" columnClasses="grid,grid,grid">
+                                        <h:panelGrid columns="10" columnClasses="label, value">
+                                            
+                                            <h:outputText value="Total Horas Semanales: " />
+                                            <h:outputText value="#{crearPlanBean.totalHorasPlan}" styleClass="outputLabel"/>
+                                            
+                                            <h:outputText value="Horas Docencia Directa: " />
+                                            <h:outputText value="#{crearPlanBean.totalHorasDocenciaDirecta}" styleClass="outputLabel"/>
+
+                                            <h:outputText value="Horas Investigación: " />
+                                            <h:outputText value="#{crearPlanBean.totalHorasInvestigacion}" styleClass="outputLabel"/>
+                                            
+                                            <h:outputText value="Horas Extensión: " />
+                                            <h:outputText value="#{crearPlanBean.totalHorasExtesion}" styleClass="outputLabel"/>
+                                            
+                                            <h:outputText value="Horas Comisiones: " />
+                                            <h:outputText value="#{crearPlanBean.totalHorasComison}" styleClass="outputLabel"/>
+                                            
+                                            <h:outputText value="Horas Publicaciones: " />
+                                            <h:outputText value="#{crearPlanBean.totalHorasPublicaciones}" styleClass="outputLabel"/>
+                                            
+                                            <h:outputText value="Horas Asesorias: " />
+                                            <h:outputText value="#{crearPlanBean.totalHorasAsesorias}" styleClass="outputLabel"/>
+
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+
+                                    <p:commandButton value="Crear" actionListener="#{crearPlanBean.save}" update="growl" process="@this"/>
+                                </p:panel>
+                            </p:tab>
+                        </p:wizard>
+
+                    </h:form>
+                </f:view>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

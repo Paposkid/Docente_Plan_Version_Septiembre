@@ -1,0 +1,119 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Nov 24, 2014, 7:06:56 PM
+    Author     : 727855
+*/
+.contenido_centrado{
+    width: 700px ;
+    margin-left: auto ;
+    margin-right: auto ;
+}
+#outer {
+    width: 100%;
+    text-align: center;
+}
+
+#inner {
+    margin-top: 100px;
+    display: inline-block;
+}
+
+.ui-widget, .ui-widget .ui-widget, .ui-datatable tbody td,
+.ui-datatable thead th, .ui-datatable tfoot td{
+    font-size: 12px !important;
+}
+
+li.ui-menuitem.ui-widget.ui-corner-all {
+    text-align: left;
+}
+.hotButton{
+    border-color: blue;
+    border-width: 1px;
+}
+.hotButton span{
+    font-weight: bold;
+    color: blue;
+}
+
+/* Actualizaciones del breadcrumb para eliminar el color rojo del fondo */
+div#breadCrumb .ui-widget-header {
+    background: none;
+    border-color: white;
+}
+
+div#breadCrumb .ui-widget-header .ui-icon{
+    background-image: url("#{resource['primefaces-clarosactheme:images/ui-icons_cc0000_256x240.png']}");
+}
+
+div#breadCrumb .ui-widget-header a {
+    color: red;
+}
+
+/*
+* corrige la distancia del menu en IE que hace que algunas veces
+* se cierre el sub-menu inmediatamente se despliega
+*/
+div.ui-menubar > ul.ui-menu-list > li.ui-menuitem > ul.ui-menu-list {
+    top: 25px !important;
+}
+
+
+/*
+ *ancho para los selectOneMenu
+ * de la pantalla Informe venta vs contrato*/
+.selectonemenu {
+    padding: 2px;
+    width: 150px !important;
+}
+
+.ui-messages-info, .ui-message-info {
+    color: green !important;
+    background-color:lightgrey !important;
+    border-color: gray !important;
+}
+.ui-radiobutton-box.ui-state-disabled {
+    display: none;
+}
+
+tbody tr td table tbody tr td label.ui-state-disabled {
+    display: none;
+}
+
+#estado tbody tr td:last-child{
+    display: none;
+}
+
+/*tbody tr td table tbody tr td:last-child{
+    display: none;
+}*/
+
+/*.oneRadio.ui-stat-disabled{
+    display:none;
+}*/
+
+.alignTop {
+    vertical-align: top;
+}
+
+.ui-dialog{
+    top: 20px !important;
+}
+
+.cellFixOverflow{
+    overflow: auto !important;
+    height: 14px !important;
+} 
+
+.ui-wizard-step-title {
+  font-size: 12px !important;
+  color: green !important;
+ 
+}
+
+div#breadCrumb .ui-widget-header a {
+  color: blue!important;
+}

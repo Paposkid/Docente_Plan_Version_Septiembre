@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <f:loadBundle basename="locale.locale_es_ES" var="msg"/>
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        </f:facet>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="./css/default.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <style type="text/css">
+            body {
+                text-align:center;
+            }
+        </style>
+        <title><ui:insert name="title">#{msg['titulo']}</ui:insert></title>
+    </h:head>
+
+    <h:body>
+        <div id="content" class="outer" style="width:100%">
+            <div id="inner">
+                <ui:insert name="content">
+
+                </ui:insert>
+            </div>
+        </div>
+
+    </h:body>
+
+</html>

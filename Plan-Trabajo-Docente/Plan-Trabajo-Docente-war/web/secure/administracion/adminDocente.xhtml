@@ -1,0 +1,181 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+Nombre: adminDocente. 
+Descripción:Gestionar los Docentes.
+Realizado Por: Jorge Armando Montoya Jaramillo.
+Fecha: 7/11/2014
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="/WEB-INF/templates/plan-default-template.xhtml">
+            <ui:param name="paramMenuTab" value="1" />
+            <ui:define name="title">
+                #{msg['txt.plan']} - #{msg['entidad.docente']}
+            </ui:define>
+
+            <ui:define name="breadCrumb">
+                <p:breadCrumb homeDisplay="text">
+                    <p:menuitem icon="ui-icon-home" outcome="/secure/inicio" />
+                    <p:menuitem value="#{msg['administracion.ruta.docente']}"
+                                url="#" />
+                </p:breadCrumb>
+            </ui:define>
+
+            <ui:define name="content" >
+                <f:view>
+                    <h:form id="frmAnalista"> 
+                        <p:panel id="resultados"  style="width: 100%"
+                                 rendered="#{docenteBean.docente eq null}">
+                            <f:facet name="header">
+                                <p:outputLabel style="float: left; font-size: 20px !important;" value="#{msg['entidad.docente']}"/>
+                                <p:commandButton style="float: right;" value="Nuevo" styleClass="hotButton"
+                                                 icon="ui-icon-plus" validateClient="true"
+                                                 update="@form"
+                                                 actionListener="#{docenteBean.nuevoDocente()}"/>
+                            </f:facet>
+                            <p:dataTable
+                                style="width: 100%"
+                                value="#{docenteBean.docentes}" var="ana"
+                                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                rows="15" paginator="true" rowsPerPageTemplate="10,15,20,25,30"
+                                sortBy="#{ana.codDocente}">
+
+                                <p:column width="30">
+                                    <p:commandButton icon="ui-icon-pencil"
+                                                     actionListener="#{docenteBean.setDocente(ana)}"
+                                                     update="@form" />
+                                </p:column>
+                                <p:column  headerText="Nombre"
+                                           sortBy="#{ana.nomDocente}">
+                                    <p:outputLabel value="#{ana.nomDocente}" />
+                                </p:column>
+                                <p:column  headerText="Facultad"
+                                           sortBy="#{ana.codFacultad.nomFacultad}">
+                                    <p:outputLabel value="#{ana.codFacultad.nomFacultad}" />
+                                </p:column>
+                                <p:column  headerText="Teléfono"
+                                           sortBy="#{ana.telDocente}">
+                                    <p:outputLabel value="#{ana.telDocente}" />
+                                </p:column>
+                                <p:column  headerText="Dedicación"
+                                           sortBy="#{ana.dedDocente}">
+                                    <p:outputLabel value="#{ana.dedDocente}" />
+                                </p:column>
+                                <p:column  headerText="Correo"
+                                           sortBy="#{ana.corDocente}">
+                                    <p:outputLabel value="#{ana.corDocente}" />
+                                </p:column>
+                                <p:column  headerText="Estado"
+                                           sortBy="#{ana.estDocente}">
+                                    <p:outputLabel value="#{ana.estDocente eq 'A' ? msg['general.administracion.activo']: msg['general.administracion.desactivo']}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+
+                        <p:confirmDialog global="true">
+                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                        <p:panel id="pnlAnalista" style="width: 100%" rendered="#{not empty docenteBean.docente}">
+                            <f:facet name="header">
+                                <div>
+                                    <p:outputLabel style="float: left; font-size: 20px !important;" value="Crear - #{msg['entidad.docente']}"
+                                                   rendered="#{(docenteBean.docente.codDocente eq null)}" />
+                                    <p:outputLabel style="float: left; font-size: 20px !important;" value="Actualizar - #{msg['entidad.docente']}"
+                                                   rendered="#{not (docenteBean.docente.codDocente  eq null)}" />
+                                    <div style="float: right;">
+                                        <p:commandButton value="#{msg['txt.cancelar']}" immediate="true"
+                                                         update="@form"
+                                                         actionListener="#{docenteBean.setDocente(null)}"/>
+                                        <p:spacer width="30" height="0" />
+                                        <p:commandButton value="#{msg['txt.suprimir']}" immediate="true"
+                                                         update="@form"
+                                                         rendered="false"
+                                                         actionListener="#{docenteBean.eliminar()}">
+                                            <p:confirm header="Confirmación" message="Esta seguro que desea eliminar este registro?" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <p:spacer width="30" height="0" />
+                                        <p:commandButton value="Aplicar Cambios"
+                                                         styleClass="hotButton" icon="ui-icon-disk"
+                                                         update="@form" rendered="#{docenteBean.docente.corDocente ne null}"
+                                                         action="#{docenteBean.aplicarCambiosDocente()}"/>
+                                    </div>
+                                    <div style="clear: both;"></div>
+                                </div>
+                            </f:facet>
+                            <p:panelGrid columns="2">
+
+                                <p:outputLabel for="usuDocumento" value="Documento Usuario:" />
+                                <h:panelGroup layout="block">
+                                    <p:inputText id="usuDocumento" required="true" disabled="#{(docenteBean.mostar)}"
+                                                 requiredMessage="El campo Documento Usuario es obligatorio." style="width: 300px;" 
+                                                 value="#{docenteBean.docente.cedDocente}"/>
+                                    <p:spacer width="10" rendered="#{docenteBean.docente.corDocente eq null}"/>
+                                    <p:commandButton id="btnConsultarIA" update="@form"  icon="ui-icon-search" action="#{docenteBean.consultarUsuario()}" rendered="#{docenteBean.docente.corDocente eq null}"/>
+                                </h:panelGroup>
+                            </p:panelGrid>
+                            
+                            <p:panelGrid columns="2" id="llenar" rendered="#{docenteBean.mostar}">
+
+                                <p:outputLabel for="anaNombre" value="Nombre: " />
+                                <p:inputText id="anaNombre" style="width:200px" disabled="true" value="#{docenteBean.docente.nomDocente}"
+                                             required="#{docenteBean.mostar}" requiredMessage="El campo Nombre es obligatorio." />
+
+
+                                <p:outputLabel for="corDocente" value="Correo:" />
+                                <p:inputText id="corDocente" disabled="true" value="#{docenteBean.docente.corDocente}"
+                                             required="#{docenteBean.mostar}" requiredMessage="El campo Correo es obliogatorio." />
+                                
+                                <p:outputLabel for="telDocente" value="Teléfono:" />
+                                <p:inputText id="telDocente" disabled="false" value="#{docenteBean.docente.telDocente}"
+                                             required="#{docenteBean.mostar}" requiredMessage="El campo Teléfono es obliogatorio." />
+
+                                <p:outputLabel for="desMateria" value="Dedicación" />
+                                <p:selectOneMenu required="#{docenteBean.mostar}" id="desMateria" 
+                                                 requiredMessage="El campo dedicación es obligatorio."
+                                                 style="width: 100%" value="#{docenteBean.docente.dedDocente}">
+                                    <f:selectItem  itemLabel="[NINGUNO]" itemValue=""></f:selectItem>
+                                    <f:selectItem  itemLabel="TIEMPO COMPLETO" itemValue="TIEMPO COMPLETO"></f:selectItem>
+                                    <f:selectItem  itemLabel="MEDIO TIEMPO" itemValue="MEDIO TIEMPO"></f:selectItem>
+                                    <f:selectItem  itemLabel="OCASIONAL" itemValue="OCASIONAL"></f:selectItem>
+                                    <p:message for="desMateria" />
+                                </p:selectOneMenu>
+
+                                <p:outputLabel for="anaEstado" value="Estado: " />
+                                <p:selectOneMenu required="#{docenteBean.mostar}" id="anaEstado" 
+                                                 requiredMessage="El campo Estado es obligatorio."
+                                                 style="width: 100%" value="#{docenteBean.docente.estDocente}">
+                                    <f:selectItem  itemLabel="[NINGUNO]" itemValue=""></f:selectItem>
+                                    <f:selectItem  itemLabel="#{msg['general.administracion.activo']}" itemValue="A"></f:selectItem>
+                                    <f:selectItem  itemLabel="#{msg['general.administracion.desactivo']}" itemValue="D"></f:selectItem>
+                                    <p:message for="anaEstado" />
+                                </p:selectOneMenu>
+
+                                <p:outputLabel for="codFacultad" value="Facultad:" />
+                                <p:selectOneMenu  id="codFacultad"  required="#{docenteBean.mostar}"
+                                                  requiredMessage="El campo Facultad es obligatorio" 
+                                                  value="#{docenteBean.docente.codFacultad}"
+                                                  converter="#{docenteBean.facultadConverter}"
+                                                  panelStyle="width:300px" effect="fade" style="width:300px"
+                                                  filter="true" filterMatchMode="contains">
+                                    <f:selectItem  itemLabel="[NINGUNO]" itemValue=""></f:selectItem>
+                                    <f:selectItems value="#{docenteBean.facultades}" var="facu" itemValue="#{facu}" itemLabel="#{facu.nomFacultad}" />
+                                    <p:message for="codFacultad" />
+                                </p:selectOneMenu>
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </f:view>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

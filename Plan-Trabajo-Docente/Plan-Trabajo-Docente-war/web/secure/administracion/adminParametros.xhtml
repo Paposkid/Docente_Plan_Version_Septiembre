@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+Nombre: viewEditarParametros.
+Descripción: Actualiza los valores de la tabla parámetros.
+Realizado Por: Jorge Armando Montoya Jaramillo.
+Fecha: 16/04/2015
+-->
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                 template="/WEB-INF/templates/sac-default-template.xhtml"
+                 xmlns:h="http://java.sun.com/jsf/html"
+                 xmlns:f="http://java.sun.com/jsf/core"
+                 xmlns:p="http://primefaces.org/ui"
+                 xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+    <ui:define name="title">
+        #{msg['administracion.parametricos.tituloSACParametros']}
+    </ui:define>
+
+    <ui:define name="breadCrumb">
+        <p:breadCrumb homeDisplay="text">
+            <p:menuitem icon="ui-icon-contact" url="#" onclick="return false;" />
+            <p:menuitem value="#{msg['administracion.parametricos.administracionParamericosParametros']}" url="#" />
+        </p:breadCrumb>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="frmParametro" prependId="false">
+
+
+            <h:panelGroup layout="block" class="divBarraBotones">
+                <h:panelGroup layout="block" class="alinearIzquierdaCorto">
+                    <h:outputText value="#{msg['administracion.parametricos.parametros']}" />
+                </h:panelGroup>
+                <h:panelGroup layout="block">
+                    <h:commandButton  value="#{msg['general.actualizar']}"  action="#{parametroBean.modificar()}"/>
+                    <h:commandButton  value="#{msg['general.cancelar']}" action="/secure/administracion/parametricos/viewEditarParametros.xhtml"  immediate="true" >
+                        <f:ajax render="frmParametro panelTabla tablaLista"/>
+                    </h:commandButton>
+                </h:panelGroup>
+            </h:panelGroup>
+
+            <h:panelGroup id="panelTabla" >
+                <p:dataTable id="tablaLista" var="parametro" rowIndexVar="idxRow"
+                             value="#{parametroBean.parametros}" emptyMessage="#{msg['genreal.tabla.noRegistros']}" >
+
+                    <p:column width="180" headerText="#{msg['general.nombre']}" >
+                        <h:outputText value="#{parametro.parNombre}" />
+                    </p:column>
+
+                    <p:column headerText="#{msg['general.valor']}" styleClass="fixed-size">
+                        <p:selectOneMenu  id="opcionBase" required="true" style="width: 100%" requiredMessage="El campo #{parametro.parNombre} es obligatorio." rendered="#{parametroBean.isTipoLista(parametro.parTipo, parametro.parNombre,'BASE.TMK' )}" value="#{parametro.parValor}" immediate="true" valueChangeListener="#{parametroBean.valueChangeMethod}">
+                            <f:selectItem  itemLabel="#{msg['administracion.parametricos.parametros.seleccionarBase']}" itemValue=""></f:selectItem>
+                            <f:selectItems value="#{parametroBean.bases}" var="bases" itemValue="#{bases.baseId}" itemLabel="#{bases.baseNombre}"  />
+                            <f:ajax render="opcionAsesor tablaLista" />
+
+                        </p:selectOneMenu>
+
+                        <p:selectOneMenu  id="opcionAsesor" required="true" style="width: 100%" requiredMessage="El campo #{parametro.parNombre} es obligatorio."  rendered="#{parametroBean.isTipoLista(parametro.parTipo, parametro.parNombre,'ASESOR.TMK')}" value="#{parametro.parValor}">
+                            <f:selectItem  itemLabel="#{msg['administracion.parametricos.parametros.seleccionarAsesor']}" itemValue=""></f:selectItem>
+                            <f:selectItems value="#{parametroBean.asesores}" var="ase" itemValue="#{ase.aseId}" itemLabel="#{ase.aseNombre}"  />
+                        </p:selectOneMenu>
+
+                        <p:selectOneMenu  id="opcionEmpresa" required="true" style="width: 100%" requiredMessage="El campo #{parametro.parNombre} es obligatorio."  rendered="#{parametroBean.isTipoLista(parametro.parTipo, parametro.parNombre,'VALIDADORA.TMK')}" value="#{parametro.parValor}">
+                            <f:selectItem  itemLabel="#{msg['administracion.parametricos.parametros.seleccionarValidadora']}" itemValue=""></f:selectItem>
+                            <f:selectItems value="#{parametroBean.empresas}" var="emp" itemValue="#{emp.empId}" itemLabel="#{emp.empNombre}"  />
+                        </p:selectOneMenu>
+
+                        <p:selectOneMenu  id="opcionUsuario" required="true"
+                                          style="width: 100%" requiredMessage="El campo #{parametro.parNombre} es obligatorio."
+                                          rendered="#{parametroBean.isTipoLista(parametro.parTipo, parametro.parNombre,'USUARIO.CON.VIRTUAL')}"
+                                          value="#{parametro.parValor}"
+                                          panelStyle="width:300px"
+                                          effect="fade" filter="true" filterMatchMode="startsWith">
+                            <f:selectItem  itemLabel="....... Seleccionar Usuario ......." itemValue=""></f:selectItem>
+                            <f:selectItems value="#{parametroBean.usuarios}" var="usuNombre" itemValue="#{usuNombre}" itemLabel="#{usuNombre}"  />
+                        </p:selectOneMenu>
+
+                        <h:inputText id="imput" required="true" style="width: 100%"
+                                     rendered="#{parametro.parTipo eq 'Input'}"
+                                     requiredMessage="El campo #{parametro.parNombre} es obligatorio." value="#{parametro.parValor}"
+                                     validatorMessage="El valor en el campo #{parametro.parNombre} debe de ser numérico.">
+                            <f:validateRegex pattern="^[0-9]+(\.[0-9]{1,2})?$"></f:validateRegex>
+                        </h:inputText>
+
+
+                        <p:panel id="pnlRowInputs" rendered="#{parametro.parTipo eq 'Inputs'}">
+                            <ui:repeat var="valor" value="#{parametroBean.inputsList[parametro.parNombre]}"
+                                       varStatus="status">
+                                <div style="float: left">
+                                    <p:inputText value="#{parametroBean.inputsList[parametro.parNombre][status.index]}" required="true" />
+                                </div>
+                            </ui:repeat>
+                            <div style="float: left">
+                                <p:commandButton icon="ui-icon-minus" update="pnlRowInputs" actionListener="#{parametroBean.eliminarFila(parametro.parNombre)}" />
+                                <p:commandButton icon="ui-icon-plus" update="pnlRowInputs" actionListener="#{parametroBean.nuevaFila(parametro.parNombre)}" />
+                            </div>
+                            <div style="clear: both;"/>
+                        </p:panel>
+
+                        <p:panel id="pnlRowUsuarios" rendered="#{parametro.parTipo eq 'Usuarios'}">
+                            <ui:repeat var="valor" value="#{parametroBean.inputsList[parametro.parNombre]}"
+                                       varStatus="status">
+                                <div style="float: left">
+                                    <p:selectOneMenu  required="true" requiredMessage="El campo #{parametro.parNombre} es obligatorio."
+                                                      value="#{parametroBean.inputsList[parametro.parNombre][status.index]}"
+                                                      panelStyle="width:300px"
+                                                      effect="fade" filter="true" filterMatchMode="contains">
+                                        <f:selectItem  itemLabel="....... Seleccionar Usuario ......." itemValue="" />
+                                        <f:selectItems value="#{parametroBean.usuarios}" var="usuNombre" itemValue="#{usuNombre}" itemLabel="#{usuNombre}"  />
+                                    </p:selectOneMenu>
+                                    <p:commandButton icon="ui-icon-minus" immediate="true"
+                                                     update="@form:panelTabla:tablaLista:pnlRowUsuarios" actionListener="#{parametroBean.eliminarFila(parametro.parNombre, status.index)}" />
+                                </div>
+                            </ui:repeat>
+                            <div style="float: left">
+                                <p:commandButton icon="ui-icon-plus" update="pnlRowUsuarios" immediate="true" actionListener="#{parametroBean.nuevaFila(parametro.parNombre)}" />
+                            </div>
+                            <div style="clear: both;"/>
+                        </p:panel>
+                    </p:column>
+
+                    <p:column width="250" headerText="#{msg['general.descripcion']}">
+                        <h:outputText value="#{parametro.parDescripcion}" />
+                    </p:column>
+
+                </p:dataTable>
+            </h:panelGroup>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

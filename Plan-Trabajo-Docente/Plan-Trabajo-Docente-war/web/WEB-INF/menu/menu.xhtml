@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      template="/template/plan-default-template.xhtml">
+    <h:body>
+
+        <p:menubar widgetVar="menu" autoDisplay="false" style="background: whitesmoke" >
+            <p:submenu label="Inicio" icon="ui-icon-home">
+                <p:menuitem value="Inicio" outcome="/secure/inicio"/>
+                <p:menuitem value="Cambiar Clave" outcome="/secure/administracion/cambiar-clave"/>
+            </p:submenu>
+            <p:submenu label="Administración" icon="ui-icon-wrench" 
+                       rendered="#{seguridadBean.tieneOpcion(1)}">
+                <p:menuitem value="Materia" outcome="/secure/administracion/adminMateria" 
+                            rendered="#{seguridadBean.tieneOpcion(1)}"/>
+                <p:menuitem value="Docente" outcome="/secure/administracion/adminDocente"
+                            rendered="#{seguridadBean.tieneOpcion(1)}"/>
+                <p:menuitem value="Curso" outcome="/secure/inicio" 
+                            rendered="#{seguridadBean.tieneOpcion(1)}"/>
+                <p:menuitem value="Fechas Academicas" outcome="/secure/administracion/adminFechasAcademicas"
+                            rendered="#{seguridadBean.tieneOpcion(1)}"/>
+                <p:menuitem value="Facultad" outcome="/secure/administracion/adminFacultades"
+                            rendered="#{seguridadBean.tieneOpcion(1)}"/>
+                <p:menuitem value="Actividad Extra Academica" outcome="/secure/inicio"
+                            rendered="#{seguridadBean.tieneOpcion(1)}"/>
+                <p:menuitem value="Usuarios" outcome="/secure/administracion/adminUsuario"
+                            rendered="#{seguridadBean.tieneOpcion(1)}"/>
+
+            </p:submenu>
+            <p:submenu label="Plan de Trabajo" icon="ui-icon-copy" >
+                    <p:menuitem value="Crear Plan" outcome="/secure/gestionPlan/crearPlanDeTrabajo"/>
+                    <p:menuitem value="Consultar Plan" outcome="/secure/inicio"/>
+                    <p:menuitem value="Subir Evidencia" outcome="/secure/inicio"/>
+                    
+            </p:submenu>
+            <p:submenu label="Reportes" icon="ui-icon-clipboard" rendered="#{seguridadBean.tieneOpcion(1)}">
+                <p:menuitem value="En desarrollo" outcome="/secure/inicio"
+                            rendered="#{seguridadBean.tieneOpcion(1)}"/>
+            </p:submenu>
+
+        </p:menubar>
+    </h:body>
+</html>
+
