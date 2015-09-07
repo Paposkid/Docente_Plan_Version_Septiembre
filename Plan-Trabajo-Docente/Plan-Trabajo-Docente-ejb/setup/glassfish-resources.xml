@@ -11,4 +11,5 @@
         <property name="driverClass" value="oracle.jdbc.OracleDriver"/>
     </jdbc-connection-pool>
     <jdbc-resource enabled="true" jndi-name="plan" object-type="user" pool-name="oracle-thin_XE_DOCENTE_PLANPool"/>
+    <jdbc-resource enabled="true" jndi-name="jdni/GlassFihs" object-type="user" pool-name="oracle-thin_XE_DOCENTE_PLANPool"/>
 </resources>

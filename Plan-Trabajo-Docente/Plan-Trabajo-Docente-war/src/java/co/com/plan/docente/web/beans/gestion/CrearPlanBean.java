@@ -25,7 +25,6 @@ import co.com.plan.docente.forentities.InvestigacionFacadeLocal;
 import co.com.plan.docente.forentities.MateriaFacadeLocal;
 import co.com.plan.docente.forentities.ParametroFacadeLocal;
 import co.com.plan.docente.forentities.UsuarioFacadeLocal;
-import co.com.plan.docente.web.util.AccionesGenerico;
 import co.com.plan.docente.web.util.Constantes;
 import javax.faces.application.FacesMessage;
 import java.math.BigDecimal;
