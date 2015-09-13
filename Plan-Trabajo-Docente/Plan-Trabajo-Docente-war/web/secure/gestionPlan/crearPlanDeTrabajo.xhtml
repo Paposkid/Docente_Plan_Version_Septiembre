@@ -65,8 +65,45 @@ Fecha: 19/04/2015
                                         <p:outputLabel  value="Numero Estudiantes: " />
                                         <p:inputText id="nmrEstudiantes" value="#{crearPlanBean.docenciaDirecta.nmrEstudiantes}" required="false" />
 
+                                        <!--
                                         <p:outputLabel  value="Hora Semanal: " />
                                         <p:inputText id="horSemanal" value="#{crearPlanBean.docenciaDirecta.horSemanal}" required="false" />
+                                        -->
+                                        <p:outputLabel id="lbldiaHorario" 
+                                                       value="Dia: " for="somdiaHorario"/>
+                                        <p:selectOneMenu id="somdiaHorario" 
+                                                         required="true" 
+                                                         requiredMessage="El día es obligatorio"
+                                                         value="#{crearPlanBean.diaHorario}" >
+                                            <f:selectItem itemLabel="[NINGUNO]" itemValue= ""/>
+                                            <f:selectItem itemLabel="LUNES" itemValue="2"/>
+                                            <f:selectItem itemLabel="MARTES" itemValue="2" />
+                                            <f:selectItem itemLabel="MIERCOLES" itemValue="2"/>
+                                            <f:selectItem itemLabel="JUEVES" itemValue="2"/>
+                                            <f:selectItem itemLabel="VIERNES" itemValue="2"/>
+                                            <f:selectItem itemLabel="SABADO" itemValue="2"/>
+                                            <f:selectItem itemLabel="DOMINGO" itemValue="2"/>
+                                            <f:selectItem itemLabel="LUNES-MIERCOLES" itemValue="4"/>
+                                            <f:selectItem itemLabel="MARTES-JUEVES" itemValue="4"/>
+                                            <f:selectItem itemLabel="MIERCOLES-VIERNES" itemValue="4"/>
+                                        </p:selectOneMenu>
+                                        
+                                         <p:outputLabel id="lblhoradia" 
+                                                       value="Hora: " for="somhoradia"/>
+                                        <p:selectOneMenu id="somhoradia" 
+                                                         required="true" 
+                                                         requiredMessage="La hora es obligatorio"
+                                                         value="#{crearPlanBean.horadia}" >
+                                            <f:selectItem itemLabel="[NINGUNO]" itemValue= "0"/>
+                                            <f:selectItem itemLabel="6am-8am" itemValue="1"/>
+                                            <f:selectItem itemLabel="8am-10am" itemValue="2" />
+                                            <f:selectItem itemLabel="10am-12pm" itemValue="3"/>
+                                            <f:selectItem itemLabel="12pm-2pm" itemValue="4"/>
+                                            <f:selectItem itemLabel="2pm-4pm" itemValue="5"/>
+                                            <f:selectItem itemLabel="4pm-6pm" itemValue="6"/>
+                                            <f:selectItem itemLabel="6pm-8pm" itemValue="7"/>
+                                            <f:selectItem itemLabel="8pm-10pm" itemValue="8"/>
+                                        </p:selectOneMenu>
 
                                         <p:outputLabel  value="Agregar Curso: " />
                                         <p:commandButton id="btnAgregarMateria" update="@form:docDirecPanel"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarMateria()}" />
@@ -90,7 +127,7 @@ Fecha: 19/04/2015
                                             </p:commandButton>
                                         </p:column>
                                         <p:column width="30">
-                                             <p:commandButton id="btnEliminarMateria" update="@form:docDirecPanel"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarMateria(docDirecta)}" />
+                                            <p:commandButton id="btnEliminarMateria" update="@form:docDirecPanel"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarMateria(docDirecta)}" />
                                         </p:column>
                                         <p:column  headerText="Nombre Materia"
                                                    sortBy="#{docDirecta.codMateria.nomMateria}">
@@ -161,7 +198,7 @@ Fecha: 19/04/2015
                                             </p:commandButton>
                                         </p:column>
                                         <p:column width="30">
-                                             <p:commandButton id="btnEliminarInvestigacion" update="@form:panelInvestigacion"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarInvestigacion(invest)}" />
+                                            <p:commandButton id="btnEliminarInvestigacion" update="@form:panelInvestigacion"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarInvestigacion(invest)}" />
                                         </p:column>
                                         <p:column  headerText="Nombre Semillero"
                                                    sortBy="#{invest.nomSemillero}">
@@ -224,8 +261,8 @@ Fecha: 19/04/2015
                                                 <f:ajax render=":formPricipal:pgextAct" />
                                             </p:commandButton>
                                         </p:column>
-                                         <p:column width="30">
-                                             <p:commandButton id="btnEliminarExtension" update="@form:panelactExtension"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarExtension(extAcademica)}" />
+                                        <p:column width="30">
+                                            <p:commandButton id="btnEliminarExtension" update="@form:panelactExtension"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarExtension(extAcademica)}" />
                                         </p:column>
                                         <p:column  headerText="Nombre Actividad"
                                                    sortBy="#{extAcademica.nomActividad}">
@@ -310,7 +347,7 @@ Fecha: 19/04/2015
                                             </p:commandButton>
                                         </p:column>
                                         <p:column width="30">
-                                             <p:commandButton id="btnEliminarComision" update="@form:panelactComision"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarComision(comision)}" />
+                                            <p:commandButton id="btnEliminarComision" update="@form:panelactComision"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarComision(comision)}" />
                                         </p:column>
                                         <p:column  headerText="Nombre Específico del Estudio"
                                                    sortBy="#{comision.nomEspecEstudio}">
@@ -388,7 +425,7 @@ Fecha: 19/04/2015
                                             </p:commandButton>
                                         </p:column>
                                         <p:column width="30">
-                                             <p:commandButton id="btnEliminarPublicacion" update="@form:panelPublicacion"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarPublicacion(publicacion)}" />
+                                            <p:commandButton id="btnEliminarPublicacion" update="@form:panelPublicacion"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarPublicacion(publicacion)}" />
                                         </p:column>
                                         <p:column  headerText="Nombre del artículo"
                                                    sortBy="#{publicacion.nomArticulo}">
@@ -453,7 +490,7 @@ Fecha: 19/04/2015
                                             </p:commandButton>
                                         </p:column>
                                         <p:column width="30">
-                                             <p:commandButton id="btnEliminarAsesorias" update="@form:panelAsesroias"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarAsesoria()}" />
+                                            <p:commandButton id="btnEliminarAsesorias" update="@form:panelAsesroias"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarAsesoria()}" />
                                         </p:column>
                                         <p:column  headerText="Integrantes del Equipo"
                                                    sortBy="#{asesoria.nomEstudiante}">
@@ -481,25 +518,25 @@ Fecha: 19/04/2015
                                 <p:panel header="Confirmación del Plan De Trabajo">
                                     <h:panelGrid id="confirmation" columns="3" columnClasses="grid,grid,grid">
                                         <h:panelGrid columns="10" columnClasses="label, value">
-                                            
+
                                             <h:outputText value="Total Horas Semanales: " />
                                             <h:outputText value="#{crearPlanBean.totalHorasPlan}" styleClass="outputLabel"/>
-                                            
+
                                             <h:outputText value="Horas Docencia Directa: " />
                                             <h:outputText value="#{crearPlanBean.totalHorasDocenciaDirecta}" styleClass="outputLabel"/>
 
                                             <h:outputText value="Horas Investigación: " />
                                             <h:outputText value="#{crearPlanBean.totalHorasInvestigacion}" styleClass="outputLabel"/>
-                                            
+
                                             <h:outputText value="Horas Extensión: " />
                                             <h:outputText value="#{crearPlanBean.totalHorasExtesion}" styleClass="outputLabel"/>
-                                            
+
                                             <h:outputText value="Horas Comisiones: " />
                                             <h:outputText value="#{crearPlanBean.totalHorasComison}" styleClass="outputLabel"/>
-                                            
+
                                             <h:outputText value="Horas Publicaciones: " />
                                             <h:outputText value="#{crearPlanBean.totalHorasPublicaciones}" styleClass="outputLabel"/>
-                                            
+
                                             <h:outputText value="Horas Asesorias: " />
                                             <h:outputText value="#{crearPlanBean.totalHorasAsesorias}" styleClass="outputLabel"/>
 

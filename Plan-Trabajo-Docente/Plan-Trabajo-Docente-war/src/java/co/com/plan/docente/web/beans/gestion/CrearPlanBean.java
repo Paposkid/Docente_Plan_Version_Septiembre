@@ -24,6 +24,7 @@ import co.com.plan.docente.forentities.FacultadFacadeLocal;
 import co.com.plan.docente.forentities.InvestigacionFacadeLocal;
 import co.com.plan.docente.forentities.MateriaFacadeLocal;
 import co.com.plan.docente.forentities.ParametroFacadeLocal;
+import co.com.plan.docente.forentities.PlanTrabajoFacadeLocal;
 import co.com.plan.docente.forentities.UsuarioFacadeLocal;
 import co.com.plan.docente.web.util.Constantes;
 import javax.faces.application.FacesMessage;
@@ -38,6 +39,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import org.primefaces.event.FlowEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import org.primefaces.event.RowEditEvent;
 
@@ -95,6 +98,9 @@ public class CrearPlanBean {
     private int totalHorasExtesion;
     private int totalHorasPublicaciones;
     private int totalHorasAsesorias;
+    private String diaHorario;
+    private int horadia;
+    private Map<String, String> horarioMap;
 
 //<editor-fold defaultstate="collapsed" desc="Inyecciones EJB">
     @EJB
@@ -111,9 +117,38 @@ public class CrearPlanBean {
     private MateriaFacadeLocal persistenciaMateria;
     @EJB
     private ParametroFacadeLocal persistenciaParametro;
+    @EJB
+    private PlanTrabajoFacadeLocal persitenciaPlan;
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Getters & Setters">
+    public Map<String, String> getHorarioMap() {
+        if (horarioMap == null) {
+            horarioMap = new HashMap<>();
+        }
+        return horarioMap;
+    }
+
+    public void setHorarioMap(Map<String, String> horarioMap) {
+        this.horarioMap = horarioMap;
+    }
+
+    public String getDiaHorario() {
+        return diaHorario;
+    }
+
+    public void setDiaHorario(String diaHorario) {
+        this.diaHorario = diaHorario;
+    }
+
+    public int getHoradia() {
+        return horadia;
+    }
+
+    public void setHoradia(int horadia) {
+        this.horadia = horadia;
+    }
+
     public int getTotalHorasComison() {
         return totalHorasComison;
     }
@@ -572,6 +607,7 @@ public class CrearPlanBean {
     public void eliminarMateria(DocenciaDirecta docenciaDirecta) {
         try {
             totalHorasDocenciaDirecta = totalHorasDocenciaDirecta - docenciaDirecta.getHorSemanal().intValue();
+            horarioMap.remove(docenciaDirecta.getCodMateria().getCodMateria() + docenciaDirecta.getGrupo());
             listDocenciaDirecta.remove(docenciaDirecta);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Curso eliminado.", ""));
         } catch (Exception e) {
@@ -631,6 +667,7 @@ public class CrearPlanBean {
 
     public String sumarHoras(FlowEvent event) {
         try {
+            //Deberia ser newstep
             if (event.getOldStep().equals("docenciaDirecta")) {
                 totalHorasPlan = totalHorasPlan + totalHorasDocenciaDirecta;
             } else if (event.getOldStep().equals("investigacion")) {
@@ -668,12 +705,20 @@ public class CrearPlanBean {
             } else if (docenciaDirecta.getNmrEstudiantes() == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "El número de estudiantes es obligatorio.", ""));
                 return null;
-            } else if (docenciaDirecta.getHorSemanal() == null) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Las horas semanales son obligatorias.", ""));
-                return null;
+                /*} 
+                 else if (docenciaDirecta.getHorSemanal() == null) {
+                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Las horas semanales son obligatorias.", ""));
+                 return null;*/
             } else {
+                docenciaDirecta.setHorSemanal(new BigInteger(diaHorario));
                 totalHorasDocenciaDirecta = totalHorasDocenciaDirecta + docenciaDirecta.getHorSemanal().intValue();
                 getListDocenciaDirecta().add(docenciaDirecta);
+                if (horarioMap == null) {
+                    horarioMap = new HashMap<>();
+                }
+                horarioMap.put(docenciaDirecta.getCodMateria().getCodMateria() + docenciaDirecta.getGrupo(), diaHorario + horadia);
+                diaHorario = "";
+                horadia = 0;
                 docenciaDirecta = new DocenciaDirecta();
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Curso agregado.", ""));
             }
