@@ -65,45 +65,17 @@ Fecha: 19/04/2015
                                         <p:outputLabel  value="Numero Estudiantes: " />
                                         <p:inputText id="nmrEstudiantes" value="#{crearPlanBean.docenciaDirecta.nmrEstudiantes}" required="false" />
 
-                                        <!--
-                                        <p:outputLabel  value="Hora Semanal: " />
-                                        <p:inputText id="horSemanal" value="#{crearPlanBean.docenciaDirecta.horSemanal}" required="false" />
-                                        -->
                                         <p:outputLabel id="lbldiaHorario" 
-                                                       value="Dia: " for="somdiaHorario"/>
+                                                       value="Dia-Hora: " for="somdiaHorario"/>
                                         <p:selectOneMenu id="somdiaHorario" 
-                                                         required="true" 
-                                                         requiredMessage="El día es obligatorio"
-                                                         value="#{crearPlanBean.diaHorario}" >
-                                            <f:selectItem itemLabel="[NINGUNO]" itemValue= ""/>
-                                            <f:selectItem itemLabel="LUNES" itemValue="2"/>
-                                            <f:selectItem itemLabel="MARTES" itemValue="2" />
-                                            <f:selectItem itemLabel="MIERCOLES" itemValue="2"/>
-                                            <f:selectItem itemLabel="JUEVES" itemValue="2"/>
-                                            <f:selectItem itemLabel="VIERNES" itemValue="2"/>
-                                            <f:selectItem itemLabel="SABADO" itemValue="2"/>
-                                            <f:selectItem itemLabel="DOMINGO" itemValue="2"/>
-                                            <f:selectItem itemLabel="LUNES-MIERCOLES" itemValue="4"/>
-                                            <f:selectItem itemLabel="MARTES-JUEVES" itemValue="4"/>
-                                            <f:selectItem itemLabel="MIERCOLES-VIERNES" itemValue="4"/>
-                                        </p:selectOneMenu>
-                                        
-                                         <p:outputLabel id="lblhoradia" 
-                                                       value="Hora: " for="somhoradia"/>
-                                        <p:selectOneMenu id="somhoradia" 
-                                                         required="true" 
-                                                         requiredMessage="La hora es obligatorio"
-                                                         value="#{crearPlanBean.horadia}" >
-                                            <f:selectItem itemLabel="[NINGUNO]" itemValue= "0"/>
-                                            <f:selectItem itemLabel="6am-8am" itemValue="1"/>
-                                            <f:selectItem itemLabel="8am-10am" itemValue="2" />
-                                            <f:selectItem itemLabel="10am-12pm" itemValue="3"/>
-                                            <f:selectItem itemLabel="12pm-2pm" itemValue="4"/>
-                                            <f:selectItem itemLabel="2pm-4pm" itemValue="5"/>
-                                            <f:selectItem itemLabel="4pm-6pm" itemValue="6"/>
-                                            <f:selectItem itemLabel="6pm-8pm" itemValue="7"/>
-                                            <f:selectItem itemLabel="8pm-10pm" itemValue="8"/>
-                                        </p:selectOneMenu>
+                                                         value="#{crearPlanBean.horarioProfesorVO}" 
+                                                         converter="#{crearPlanBean.horasConverter}"
+                                                         immediate="true"
+                                                         panelStyle="width:300px" effect="fade" style="width:200px"
+                                                         filter="true" filterMatchMode="contains">
+                                            <f:selectItems value="#{crearPlanBean.listHorarioProfesorVO}" var="hor" itemValue="#{hor}" itemLabel="#{hor.diaHora}" />
+                                            <p:message for="diaHora" />
+                                        </p:selectOneMenu>   
 
                                         <p:outputLabel  value="Agregar Curso: " />
                                         <p:commandButton id="btnAgregarMateria" update="@form:docDirecPanel"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarMateria()}" />
@@ -176,8 +148,15 @@ Fecha: 19/04/2015
                                         <p:outputLabel  value="Productos para cada Actividad: " />
                                         <p:inputText  value="#{crearPlanBean.investigacion.actProductos}" />
 
-                                        <p:outputLabel  value="Hora Semanal: " />
-                                        <p:inputText  value="#{crearPlanBean.investigacion.horSemanal}" />
+                                        <p:selectOneMenu id="somdiaHorarioInv" 
+                                                         value="#{crearPlanBean.horarioProfesorVO}" 
+                                                         converter="#{crearPlanBean.horasConverter}"
+                                                         immediate="true"
+                                                         panelStyle="width:300px" effect="fade" style="width:200px"
+                                                         filter="true" filterMatchMode="contains">
+                                            <f:selectItems value="#{crearPlanBean.listHorarioProfesorVO}" var="hor" itemValue="#{hor}" itemLabel="#{hor.diaHora}" />
+                                            <p:message for="diaHoraInves" />
+                                        </p:selectOneMenu>   
 
                                         <p:outputLabel  value="Agregar Investigación: " />
                                         <p:commandButton  update="@form:panelInvestigacion"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarInvestigacion()}" />

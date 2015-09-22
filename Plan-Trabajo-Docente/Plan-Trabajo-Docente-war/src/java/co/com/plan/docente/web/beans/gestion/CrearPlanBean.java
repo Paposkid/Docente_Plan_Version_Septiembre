@@ -26,7 +26,9 @@ import co.com.plan.docente.forentities.MateriaFacadeLocal;
 import co.com.plan.docente.forentities.ParametroFacadeLocal;
 import co.com.plan.docente.forentities.PlanTrabajoFacadeLocal;
 import co.com.plan.docente.forentities.UsuarioFacadeLocal;
+import co.com.plan.docente.vo.HorarioProfesorVO;
 import co.com.plan.docente.web.util.Constantes;
+import co.com.plan.docente.web.util.Util;
 import javax.faces.application.FacesMessage;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -85,8 +87,11 @@ public class CrearPlanBean {
     private List<Publicacion> listPublicaciones;
     private Usuario usuario;
     private Parametro parametro;
+    private List<HorarioProfesorVO> listHorarioProfesorVO;
+    private HorarioProfesorVO horarioProfesorVO;
     private Converter facultadConverter;
     private Converter materiaConverter;
+    private Converter horasConverter;
     private boolean mostar;
     private boolean skip;
     private String codigoMateria;
@@ -100,7 +105,7 @@ public class CrearPlanBean {
     private int totalHorasAsesorias;
     private String diaHorario;
     private int horadia;
-    private Map<String, String> horarioMap;
+    private Map<String, HorarioProfesorVO> horarioMap;
 
 //<editor-fold defaultstate="collapsed" desc="Inyecciones EJB">
     @EJB
@@ -122,14 +127,36 @@ public class CrearPlanBean {
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Getters & Setters">
-    public Map<String, String> getHorarioMap() {
+    public List<HorarioProfesorVO> getListHorarioProfesorVO() {
+        if (listHorarioProfesorVO == null) {
+            listHorarioProfesorVO = new ArrayList<>();
+        }
+        return listHorarioProfesorVO;
+    }
+
+    public void setListHorarioProfesorVO(List<HorarioProfesorVO> listHorarioProfesorVO) {
+        this.listHorarioProfesorVO = listHorarioProfesorVO;
+    }
+
+    public HorarioProfesorVO getHorarioProfesorVO() {
+        if (horarioProfesorVO == null) {
+            horarioProfesorVO = new HorarioProfesorVO();
+        }
+        return horarioProfesorVO;
+    }
+
+    public void setHorarioProfesorVO(HorarioProfesorVO horarioProfesorVO) {
+        this.horarioProfesorVO = horarioProfesorVO;
+    }
+
+    public Map<String, HorarioProfesorVO> getHorarioMap() {
         if (horarioMap == null) {
             horarioMap = new HashMap<>();
         }
         return horarioMap;
     }
 
-    public void setHorarioMap(Map<String, String> horarioMap) {
+    public void setHorarioMap(Map<String, HorarioProfesorVO> horarioMap) {
         this.horarioMap = horarioMap;
     }
 
@@ -525,6 +552,48 @@ public class CrearPlanBean {
         this.skip = skip;
     }
 
+    public Converter getHorasConverter() {
+        if (this.horasConverter == null) {
+            this.horasConverter = new Converter() {
+
+                @Override
+                public Object getAsObject(FacesContext context, UIComponent component, String value) {
+                    HorarioProfesorVO retorno = null;
+
+                    if (value != null && !value.isEmpty()
+                            && !value.trim().equals("[TODOS]")
+                            && !value.trim().equals("[NINGUNO]")) {
+                        String dale = value;
+                        for (HorarioProfesorVO horario : getListHorarioProfesorVO()) {
+                            if (horario.getDiaHora().compareTo(dale) == 0) {
+                                retorno = horario;
+                                break;
+                            }
+                        }
+                    }
+
+                    return retorno;
+                }
+
+                @Override
+                public String getAsString(FacesContext context, UIComponent component, Object value) {
+                    String retorno = null;
+
+                    if (value != null && value instanceof HorarioProfesorVO) {
+                        retorno = ((HorarioProfesorVO) value).getDiaHora();
+                    }
+
+                    return retorno;
+                }
+            };
+        }
+        return horasConverter;
+    }
+
+    public void setHorasConverter(Converter horasConverter) {
+        this.horasConverter = horasConverter;
+    }
+
     public Converter getMateriaConverter() {
         if (this.materiaConverter == null) {
             this.materiaConverter = new Converter() {
@@ -574,6 +643,8 @@ public class CrearPlanBean {
             if (parametro == null) {
                 parametro = persistenciaParametro.find(new BigDecimal(Constantes.VALOR_UNO));
                 horasLegales = Integer.parseInt(parametro.getParValor());
+                listHorarioProfesorVO = Util.listaHorario();
+
             }
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Bienvenido al asistente de creación de su plan de trabajo.", ""));
         } catch (Exception e) {
@@ -607,7 +678,7 @@ public class CrearPlanBean {
     public void eliminarMateria(DocenciaDirecta docenciaDirecta) {
         try {
             totalHorasDocenciaDirecta = totalHorasDocenciaDirecta - docenciaDirecta.getHorSemanal().intValue();
-            horarioMap.remove(docenciaDirecta.getCodMateria().getCodMateria() + docenciaDirecta.getGrupo());
+            horarioMap.remove(horarioProfesorVO.getDiaHora());
             listDocenciaDirecta.remove(docenciaDirecta);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Curso eliminado.", ""));
         } catch (Exception e) {
@@ -695,6 +766,7 @@ public class CrearPlanBean {
     }
 
     public String agregarMateria() {
+        HorarioProfesorVO valorAnterior = null;
         try {
             if (docenciaDirecta.getCodMateria() == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "La asignatura es obligatoria.", ""));
@@ -710,16 +782,28 @@ public class CrearPlanBean {
                  FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Las horas semanales son obligatorias.", ""));
                  return null;*/
             } else {
-                docenciaDirecta.setHorSemanal(new BigInteger(diaHorario));
-                totalHorasDocenciaDirecta = totalHorasDocenciaDirecta + docenciaDirecta.getHorSemanal().intValue();
-                getListDocenciaDirecta().add(docenciaDirecta);
+                docenciaDirecta.setHorSemanal(new BigInteger(horarioProfesorVO.getIntencidadSemanal() + "".trim()));
                 if (horarioMap == null) {
                     horarioMap = new HashMap<>();
                 }
-                horarioMap.put(docenciaDirecta.getCodMateria().getCodMateria() + docenciaDirecta.getGrupo(), diaHorario + horadia);
-                diaHorario = "";
-                horadia = 0;
-                docenciaDirecta = new DocenciaDirecta();
+                try {
+                    horarioProfesorVO.setNombreMateria(docenciaDirecta.getCodMateria().getNomMateria());
+                    valorAnterior = horarioMap.get(horarioProfesorVO.getDiaHora());
+                    if (valorAnterior != null && valorAnterior.getDiaHora().equalsIgnoreCase(horarioProfesorVO.getDiaHora())) {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "No puede seleccionar ese hoario ya lo tomo..", ""));
+                        limpiarMateria();
+                        return null;
+                    } else {
+                        horarioMap.put(horarioProfesorVO.getDiaHora(), horarioProfesorVO);
+                        totalHorasDocenciaDirecta = totalHorasDocenciaDirecta + docenciaDirecta.getHorSemanal().intValue();
+                        getListDocenciaDirecta().add(docenciaDirecta);
+                    }
+                } catch (Exception ex) {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "No puede seleccionar ese hoario ya lo tomo..", ""));
+                    limpiarMateria();
+                    ex.printStackTrace();
+                }
+                limpiarMateria();
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Curso agregado.", ""));
             }
         } catch (Exception e) {
@@ -727,6 +811,13 @@ public class CrearPlanBean {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void limpiarMateria() {
+        horarioProfesorVO = new HorarioProfesorVO();
+        diaHorario = "";
+        horadia = 0;
+        docenciaDirecta = new DocenciaDirecta();
     }
 
     public String agregarInvestigacion() {
@@ -738,9 +829,11 @@ public class CrearPlanBean {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Debe ingresar valores en los campos diferentes a cero.", ""));
                 return null;
             } else {
+                investigacion.setHorSemanal(new BigInteger(horarioProfesorVO.getIntencidadSemanal() + "".trim()));
                 totalHorasInvestigacion = totalHorasInvestigacion + investigacion.getHorSemanal().intValue();
                 getInvestigaciones().add(investigacion);
                 investigacion = new Investigacion();
+                horarioProfesorVO = new HorarioProfesorVO();
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Investigación agregada.", ""));
             }
         } catch (Exception e) {
