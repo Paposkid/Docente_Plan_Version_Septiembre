@@ -148,6 +148,8 @@ Fecha: 19/04/2015
                                         <p:outputLabel  value="Productos para cada Actividad: " />
                                         <p:inputText  value="#{crearPlanBean.investigacion.actProductos}" />
 
+                                        <p:outputLabel id="lblHorarioInv" 
+                                                       value="Dia-Hora: " for="somdiaHorarioInv"/>
                                         <p:selectOneMenu id="somdiaHorarioInv" 
                                                          value="#{crearPlanBean.horarioProfesorVO}" 
                                                          converter="#{crearPlanBean.horasConverter}"
@@ -218,9 +220,17 @@ Fecha: 19/04/2015
                                         <p:calendar id="actExtAcademicafec" style="width: 100%"
                                                     value="#{crearPlanBean.actExtAcademica.fec}" navigator="true" pattern="dd/MM/yyyy" />
 
-
-                                        <p:outputLabel  value="Tiempo Dedicación: " />
-                                        <p:inputText id="actExtAcademicahorDedicadas" value="#{crearPlanBean.actExtAcademica.horDedicadas}"/>
+                                        <p:outputLabel id="lblHorarioExt" 
+                                                       value="Dia-Hora: " for="somdiaHorarioExt"/>
+                                        <p:selectOneMenu id="somdiaHorarioExt" 
+                                                         value="#{crearPlanBean.horarioProfesorVO}" 
+                                                         converter="#{crearPlanBean.horasConverter}"
+                                                         immediate="true"
+                                                         panelStyle="width:300px" effect="fade" style="width:200px"
+                                                         filter="true" filterMatchMode="contains">
+                                            <f:selectItems value="#{crearPlanBean.listHorarioProfesorVO}" var="hor" itemValue="#{hor}" itemLabel="#{hor.diaHora}" />
+                                            <p:message for="diaHoraExt" />
+                                        </p:selectOneMenu>   
 
                                         <p:outputLabel  value="Agregar act de extensión " />
                                         <p:commandButton  update="@form:panelactExtension"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarExtension()}" />
@@ -304,8 +314,17 @@ Fecha: 19/04/2015
                                         <p:outputLabel  value="Aportes institucionales obtenidos y/o esperados: " />
                                         <p:inputText id="aporte" value="#{crearPlanBean.comisionEstudio.aporte}"/>
 
-                                        <p:outputLabel  value="Tiempo Dedicación: " />
-                                        <p:inputText id="comisionEstudiohorDedicadas" value="#{crearPlanBean.comisionEstudio.horDedicadas}"/>
+                                        <p:outputLabel id="lblHorarioComision" 
+                                                       value="Dia-Hora: " for="somdiaHorarioComision"/>
+                                        <p:selectOneMenu id="somdiaHorarioComision" 
+                                                         value="#{crearPlanBean.horarioProfesorVO}" 
+                                                         converter="#{crearPlanBean.horasConverter}"
+                                                         immediate="true"
+                                                         panelStyle="width:300px" effect="fade" style="width:200px"
+                                                         filter="true" filterMatchMode="contains">
+                                            <f:selectItems value="#{crearPlanBean.listHorarioProfesorVO}" var="hor" itemValue="#{hor}" itemLabel="#{hor.diaHora}" />
+                                            <p:message for="diaHoraComision" />
+                                        </p:selectOneMenu>   
 
                                         <p:outputLabel  value="Agregar Comisión: " />
                                         <p:commandButton  update="@form:panelactComision"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarComision()}" />
@@ -382,8 +401,18 @@ Fecha: 19/04/2015
                                         <p:inputText id="temPrincipal" style="width: 100%"
                                                      value="#{crearPlanBean.publicacion.temPrincipal}"  />
 
-                                        <p:outputLabel  value="Tiempo Dedicación: " />
-                                        <p:inputText id="publicacionhorDedicadas" value="#{crearPlanBean.publicacion.horDedicadas}"/>
+
+                                        <p:outputLabel id="lblHorarioPublicacion" 
+                                                       value="Dia-Hora: " for="somdiaHorarioPublicacion"/>
+                                        <p:selectOneMenu id="somdiaHorarioPublicacion" 
+                                                         value="#{crearPlanBean.horarioProfesorVO}" 
+                                                         converter="#{crearPlanBean.horasConverter}"
+                                                         immediate="true"
+                                                         panelStyle="width:300px" effect="fade" style="width:200px"
+                                                         filter="true" filterMatchMode="contains">
+                                            <f:selectItems value="#{crearPlanBean.listHorarioProfesorVO}" var="hor" itemValue="#{hor}" itemLabel="#{hor.diaHora}" />
+                                            <p:message for="diaHoraPublicacion" />
+                                        </p:selectOneMenu>
 
                                         <p:outputLabel  value="Agregar Publicación " />
                                         <p:commandButton  update=":formPricipal:panelPublicacion"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarPublicacon()}" />
@@ -447,8 +476,17 @@ Fecha: 19/04/2015
                                         <p:inputText id="aspRelevante" style="width: 100%"
                                                      value="#{crearPlanBean.asesoriaProyecto.aspRelevante}"  />
 
-                                        <p:outputLabel  value="Tiempo Dedicación: " />
-                                        <p:inputText id="asehorDedicadas" value="#{crearPlanBean.asesoriaProyecto.horDedicadas}"/>
+                                        <p:outputLabel id="lblHorarioAsesoria" 
+                                                       value="Dia-Hora: " for="somdiaHorarioAsesoria"/>
+                                        <p:selectOneMenu id="somdiaHorarioAsesoria" 
+                                                         value="#{crearPlanBean.horarioProfesorVO}" 
+                                                         converter="#{crearPlanBean.horasConverter}"
+                                                         immediate="true"
+                                                         panelStyle="width:300px" effect="fade" style="width:200px"
+                                                         filter="true" filterMatchMode="contains">
+                                            <f:selectItems value="#{crearPlanBean.listHorarioProfesorVO}" var="hor" itemValue="#{hor}" itemLabel="#{hor.diaHora}" />
+                                            <p:message for="diaHoraAsesoria" />
+                                        </p:selectOneMenu>
 
                                         <p:outputLabel  value="Agregar Asesoría " />
                                         <p:commandButton  update=":formPricipal:panelAsesroias"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarAsesorias()}" />
@@ -496,7 +534,7 @@ Fecha: 19/04/2015
                             <p:tab id="tabConfirmacion" title="CONFIRMACIÓN DEL PLAN">
                                 <p:panel header="Confirmación del Plan De Trabajo">
                                     <h:panelGrid id="confirmation" columns="3" columnClasses="grid,grid,grid">
-                                        <h:panelGrid columns="10" columnClasses="label, value">
+                                        <h:panelGrid columns="16" columnClasses="label, value">
 
                                             <h:outputText value="Total Horas Semanales: " />
                                             <h:outputText value="#{crearPlanBean.totalHorasPlan}" styleClass="outputLabel"/>
@@ -522,7 +560,26 @@ Fecha: 19/04/2015
                                         </h:panelGrid>
                                     </h:panelGrid>
 
-                                    <p:commandButton value="Crear" actionListener="#{crearPlanBean.save}" update="growl" process="@this"/>
+                                    <p:commandButton value="Crear" actionListener="#{crearPlanBean.guardar}" update="growl" process="@this"/>
+
+                                    <p:dataTable style="width: 100%" value="#{crearPlanBean.listHorarioMostrar}" var="horario"
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 rows="15" paginator="true" rowsPerPageTemplate="10,15,20,25,30"
+                                                 sortBy="#{horario.diaHora}">
+
+                                        <p:column  headerText="Dia-Hora"
+                                                   sortBy="#{horario.diaHora}">
+                                            <p:outputLabel value="#{horario.diaHora}" />
+                                        </p:column>
+                                        <p:column  headerText="Actividad"
+                                                   sortBy="#{horario.nombreMateria}">
+                                            <p:outputLabel value="#{horario.nombreMateria}" />
+                                        </p:column>
+                                        <p:column  headerText="Intencidad Semanal"
+                                                   sortBy="#{horario.intencidadSemanal}">
+                                            <p:outputLabel value="#{horario.intencidadSemanal}" />
+                                        </p:column>
+                                    </p:dataTable>
                                 </p:panel>
                             </p:tab>
                         </p:wizard>

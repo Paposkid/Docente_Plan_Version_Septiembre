@@ -17,6 +17,7 @@ import co.com.plan.docente.entities.Facultad;
 import co.com.plan.docente.entities.Investigacion;
 import co.com.plan.docente.entities.Materia;
 import co.com.plan.docente.entities.Parametro;
+import co.com.plan.docente.entities.PlanTrabajo;
 import co.com.plan.docente.entities.Publicacion;
 import co.com.plan.docente.entities.Usuario;
 import co.com.plan.docente.forentities.DocenteFacadeLocal;
@@ -41,6 +42,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import org.primefaces.event.FlowEvent;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -61,6 +63,7 @@ public class CrearPlanBean {
     }
     private static final long serialVersionUID = 1L;
 
+    private PlanTrabajo planTrabajo;
     private Docente docente;
     private List<Docente> docentes;
     private Materia materia;
@@ -106,6 +109,7 @@ public class CrearPlanBean {
     private String diaHorario;
     private int horadia;
     private Map<String, HorarioProfesorVO> horarioMap;
+    private List<HorarioProfesorVO> listHorarioMostrar;
 
 //<editor-fold defaultstate="collapsed" desc="Inyecciones EJB">
     @EJB
@@ -127,6 +131,28 @@ public class CrearPlanBean {
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Getters & Setters">
+    public PlanTrabajo getPlanTrabajo() {
+        if (planTrabajo == null) {
+            planTrabajo = new PlanTrabajo();
+        }
+        return planTrabajo;
+    }
+
+    public void setPlanTrabajo(PlanTrabajo planTrabajo) {
+        this.planTrabajo = planTrabajo;
+    }
+
+    public List<HorarioProfesorVO> getListHorarioMostrar() {
+        if (listHorarioMostrar == null) {
+            listHorarioMostrar = new ArrayList<>();
+        }
+        return listHorarioMostrar;
+    }
+
+    public void setListHorarioMostrar(List<HorarioProfesorVO> listHorarioMostrar) {
+        this.listHorarioMostrar = listHorarioMostrar;
+    }
+
     public List<HorarioProfesorVO> getListHorarioProfesorVO() {
         if (listHorarioProfesorVO == null) {
             listHorarioProfesorVO = new ArrayList<>();
@@ -655,7 +681,13 @@ public class CrearPlanBean {
 
     public String onFlowProcess(FlowEvent event) {
         if (skip) {
-            skip = false;   //reset in case user goes back
+            skip = false;
+            listHorarioMostrar = new ArrayList<>();
+            for (Map.Entry<String, HorarioProfesorVO> entrySet : horarioMap.entrySet()) {
+                String key = entrySet.getKey();
+                HorarioProfesorVO value = entrySet.getValue();
+                listHorarioMostrar.add(value);
+            }//reset in case user goes back
             return "confirm";
         } else {
             if (getListDocenciaDirecta().isEmpty()) {
@@ -671,6 +703,14 @@ public class CrearPlanBean {
                 }
             }
             sumarHoras(event);
+            if (event.getNewStep().equalsIgnoreCase("tabConfirmacion")) {
+                listHorarioMostrar = new ArrayList<>();
+                for (Map.Entry<String, HorarioProfesorVO> entrySet : horarioMap.entrySet()) {
+                    String key = entrySet.getKey();
+                    HorarioProfesorVO value = entrySet.getValue();
+                    listHorarioMostrar.add(value);
+                }
+            }
             return event.getNewStep();
         }
     }
@@ -752,10 +792,10 @@ public class CrearPlanBean {
             } else if (event.getOldStep().equals("tabAsesorias")) {
                 totalHorasPlan = totalHorasPlan + totalHorasAsesorias;
             }
-            if (totalHorasPlan > 40) {
+            if (totalHorasPlan > horasLegales) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha superado las " + totalHorasPlan + " horas legales semanales.", ""));
                 return null;
-            } else if (totalHorasPlan == 40) {
+            } else if (totalHorasPlan == horasLegales) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Acaba de completar : " + totalHorasPlan + " horas legales semanales.", ""));
                 return null;
             }
@@ -766,7 +806,6 @@ public class CrearPlanBean {
     }
 
     public String agregarMateria() {
-        HorarioProfesorVO valorAnterior = null;
         try {
             if (docenciaDirecta.getCodMateria() == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "La asignatura es obligatoria.", ""));
@@ -777,34 +816,19 @@ public class CrearPlanBean {
             } else if (docenciaDirecta.getNmrEstudiantes() == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "El número de estudiantes es obligatorio.", ""));
                 return null;
-                /*} 
-                 else if (docenciaDirecta.getHorSemanal() == null) {
-                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Las horas semanales son obligatorias.", ""));
-                 return null;*/
+            } else if (horarioProfesorVO == null || horarioProfesorVO.getDiaHora().equalsIgnoreCase("[NINGUNO]")) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Debe Selecionar un Horario.", ""));
+                return null;
             } else {
                 docenciaDirecta.setHorSemanal(new BigInteger(horarioProfesorVO.getIntencidadSemanal() + "".trim()));
-                if (horarioMap == null) {
-                    horarioMap = new HashMap<>();
-                }
-                try {
-                    horarioProfesorVO.setNombreMateria(docenciaDirecta.getCodMateria().getNomMateria());
-                    valorAnterior = horarioMap.get(horarioProfesorVO.getDiaHora());
-                    if (valorAnterior != null && valorAnterior.getDiaHora().equalsIgnoreCase(horarioProfesorVO.getDiaHora())) {
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "No puede seleccionar ese hoario ya lo tomo..", ""));
-                        limpiarMateria();
-                        return null;
-                    } else {
-                        horarioMap.put(horarioProfesorVO.getDiaHora(), horarioProfesorVO);
-                        totalHorasDocenciaDirecta = totalHorasDocenciaDirecta + docenciaDirecta.getHorSemanal().intValue();
-                        getListDocenciaDirecta().add(docenciaDirecta);
-                    }
-                } catch (Exception ex) {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "No puede seleccionar ese hoario ya lo tomo..", ""));
+                if (llenarHorario(docenciaDirecta.getCodMateria().getNomMateria())) {
+                    totalHorasDocenciaDirecta = totalHorasDocenciaDirecta + docenciaDirecta.getHorSemanal().intValue();
+                    getListDocenciaDirecta().add(docenciaDirecta);
                     limpiarMateria();
-                    ex.printStackTrace();
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Curso agregado.", ""));
+                } else {
+                    limpiarMateria();
                 }
-                limpiarMateria();
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Curso agregado.", ""));
             }
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Ocurrio un Error agregando el Curso.", ""));
@@ -813,8 +837,35 @@ public class CrearPlanBean {
         return null;
     }
 
-    public void limpiarMateria() {
+    public boolean llenarHorario(String nombreActividad) {
+        boolean retono = false;
+        HorarioProfesorVO valorAnterior = null;
+        if (horarioMap == null) {
+            horarioMap = new HashMap<>();
+        }
+        try {
+            horarioProfesorVO.setNombreMateria(nombreActividad);
+            valorAnterior = horarioMap.get(horarioProfesorVO.getDiaHora());
+            if (valorAnterior != null && valorAnterior.getDiaHora().equalsIgnoreCase(horarioProfesorVO.getDiaHora())) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "No puede seleccionar ese hoario ya lo tomo.", ""));
+            } else {
+                horarioMap.put(horarioProfesorVO.getDiaHora(), horarioProfesorVO);
+                retono = true;
+            }
+        } catch (Exception ex) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "No puede seleccionar ese hoario ya lo tomo.", ""));
+            limpiarMateria();
+            ex.printStackTrace();
+        }
+        return retono;
+    }
+
+    public void limpiarHorario() {
         horarioProfesorVO = new HorarioProfesorVO();
+    }
+
+    public void limpiarMateria() {
+        limpiarHorario();
         diaHorario = "";
         horadia = 0;
         docenciaDirecta = new DocenciaDirecta();
@@ -823,18 +874,25 @@ public class CrearPlanBean {
     public String agregarInvestigacion() {
 
         try {
-            if (investigacion.getActDesarrollada().equals("")
-                    || investigacion.getHorSemanal().compareTo(BigInteger.ZERO) == 0
-                    || investigacion.getActProductos().equals("")) {
+            if (horarioProfesorVO == null
+                    || investigacion.getActDesarrollada().equals("")
+                    || investigacion.getNomSemillero().equals("")
+                    || investigacion.getActProductos().equals("")
+                    || investigacion.getTipVinculo().equalsIgnoreCase("NINGUNO")
+                    || horarioProfesorVO == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Debe ingresar valores en los campos diferentes a cero.", ""));
                 return null;
             } else {
                 investigacion.setHorSemanal(new BigInteger(horarioProfesorVO.getIntencidadSemanal() + "".trim()));
-                totalHorasInvestigacion = totalHorasInvestigacion + investigacion.getHorSemanal().intValue();
-                getInvestigaciones().add(investigacion);
-                investigacion = new Investigacion();
-                horarioProfesorVO = new HorarioProfesorVO();
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Investigación agregada.", ""));
+                if (llenarHorario(investigacion.getNomSemillero())) {
+                    totalHorasInvestigacion = totalHorasInvestigacion + investigacion.getHorSemanal().intValue();
+                    getInvestigaciones().add(investigacion);
+                    investigacion = new Investigacion();
+                    limpiarHorario();
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Investigación agregada.", ""));
+                } else {
+                    investigacion = new Investigacion();
+                }
             }
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Ocurrio un Error agregando la investigación.", ""));
@@ -846,21 +904,26 @@ public class CrearPlanBean {
     public String agregarExtension() {
 
         try {
-            /*  if (actExtAcademica.getActDesarrollada().equals("")
-             || actExtAcademica.getHorSemanal().compareTo(BigInteger.ZERO) == 0
-             || actExtAcademica.getActProductos().equals("")) {
-             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Debe ingresar valores en los campos diferentes a cero.", ""));
-             return null;
-             } else {*/
-            totalHorasExtesion = totalHorasExtesion + actExtAcademica.getHorDedicadas().intValue();
-            getListActExtAcademicas().add(actExtAcademica);
-            actExtAcademica = new ActExtAcademica();
-            /*actExtAcademica.setFec(null);
-             actExtAcademica.setFecInicio(new Date());
-             actExtAcademica.setNomActividad("NINGUNA");
-             actExtAcademica.setHorDedicadas(new BigInteger("0"));*/
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Actividad de Extensión Académica agregada.", ""));
-            //}
+            if (actExtAcademica.getNomActividad().equals("")
+                    || horarioProfesorVO == null) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Debe ingresar valores en los campos diferentes a cero.", ""));
+                return null;
+            } else {
+                actExtAcademica.setHorDedicadas(new BigInteger(horarioProfesorVO.getIntencidadSemanal() + "".trim()));
+                if (llenarHorario(actExtAcademica.getNomActividad())) {
+                    totalHorasExtesion = totalHorasExtesion + actExtAcademica.getHorDedicadas().intValue();
+                    getListActExtAcademicas().add(actExtAcademica);
+                    actExtAcademica = new ActExtAcademica();
+                    limpiarHorario();
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Actividad de Extensión Académica agregada.", ""));
+                } else {
+                    actExtAcademica = new ActExtAcademica();
+                }
+                /*actExtAcademica.setFec(null);
+                 actExtAcademica.setFecInicio(new Date());
+                 actExtAcademica.setNomActividad("NINGUNA");
+                 actExtAcademica.setHorDedicadas(new BigInteger("0"));*/
+            }
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Ocurrio un Error agregando la actividad de Extensión Académica.", ""));
             e.printStackTrace();
@@ -871,17 +934,25 @@ public class CrearPlanBean {
     public String agregarComision() {
 
         try {
-            /*  if (actExtAcademica.getActDesarrollada().equals("")
-             || actExtAcademica.getHorSemanal().compareTo(BigInteger.ZERO) == 0
-             || actExtAcademica.getActProductos().equals("")) {
-             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Debe ingresar valores en los campos diferentes a cero.", ""));
-             return null;
-             } else {*/
-            totalHorasComison = totalHorasComison + comisionEstudio.getHorDedicadas().intValue();
-            getListComisionEstudios().add(comisionEstudio);
-            comisionEstudio = new ComisionEstudio();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Comisión de estudio agregada.", ""));
-            //}
+            if (horarioProfesorVO == null
+                    || comisionEstudio.getCenEstudio().equals("")
+                    || comisionEstudio.getNomEspecEstudio().equals("")
+                    || comisionEstudio.getTipEstudio().equalsIgnoreCase("NINGUNO")) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Debe ingresar valores en los campos diferentes a cero.", ""));
+                return null;
+            } else {
+                comisionEstudio.setHorDedicadas(new BigInteger(horarioProfesorVO.getIntencidadSemanal() + "".trim()));
+                if (llenarHorario(comisionEstudio.getNomEspecEstudio())) {
+                    totalHorasComison = totalHorasComison + comisionEstudio.getHorDedicadas().intValue();
+                    getListComisionEstudios().add(comisionEstudio);
+                    comisionEstudio = new ComisionEstudio();
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Comisión de estudio agregada.", ""));
+                    limpiarHorario();
+                } else {
+                    comisionEstudio = new ComisionEstudio();
+                }
+            }
+
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Ocurrio un Error agregando la Comisión de estudio.", ""));
             e.printStackTrace();
@@ -892,17 +963,24 @@ public class CrearPlanBean {
     public String agregarPublicacon() {
 
         try {
-            /*  if (actExtAcademica.getActDesarrollada().equals("")
-             || actExtAcademica.getHorSemanal().compareTo(BigInteger.ZERO) == 0
-             || actExtAcademica.getActProductos().equals("")) {
-             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Debe ingresar valores en los campos diferentes a cero.", ""));
-             return null;
-             } else {*/
-            totalHorasPublicaciones = totalHorasPublicaciones + publicacion.getHorDedicadas().intValue();
-            getListPublicaciones().add(publicacion);
-            publicacion = new Publicacion();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Publicación agregada.", ""));
-            //}
+            if (horarioProfesorVO == null
+                    || publicacion.getNomArticulo().equals("")
+                    || publicacion.getCoautor().equals("")
+                    || publicacion.getTemPrincipal().equals("")) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Debe ingresar valores en los campos diferentes a cero.", ""));
+                return null;
+            } else {
+                publicacion.setHorDedicadas(new BigInteger(horarioProfesorVO.getIntencidadSemanal() + "".trim()));
+                if (llenarHorario(publicacion.getTemPrincipal())) {
+                    totalHorasPublicaciones = totalHorasPublicaciones + publicacion.getHorDedicadas().intValue();
+                    getListPublicaciones().add(publicacion);
+                    publicacion = new Publicacion();
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Publicación agregada.", ""));
+                    limpiarHorario();
+                } else {
+                    publicacion = new Publicacion();
+                }
+            }
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Ocurrio un Error agregando la Publicación.", ""));
             e.printStackTrace();
@@ -913,19 +991,54 @@ public class CrearPlanBean {
     public String agregarAsesorias() {
 
         try {
-            /*  if (actExtAcademica.getActDesarrollada().equals("")
-             || actExtAcademica.getHorSemanal().compareTo(BigInteger.ZERO) == 0
-             || actExtAcademica.getActProductos().equals("")) {
-             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Debe ingresar valores en los campos diferentes a cero.", ""));
-             return null;
-             } else {*/
-            totalHorasAsesorias = totalHorasAsesorias + asesoriaProyecto.getHorDedicadas().intValue();
-            getListAsesoriaProyectos().add(asesoriaProyecto);
-            asesoriaProyecto = new AsesoriaProyecto();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Asesoría agregada.", ""));
-            //}
+            if (horarioProfesorVO == null
+                    || asesoriaProyecto.getNomEstudiante().equals("")
+                    || asesoriaProyecto.getAspRelevante().equals("")
+                    || asesoriaProyecto.getTitulo().equals("")) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Debe ingresar valores en los campos diferentes a cero.", ""));
+                return null;
+            } else {
+                asesoriaProyecto.setHorDedicadas(new BigInteger(horarioProfesorVO.getIntencidadSemanal() + "".trim()));
+                if (llenarHorario(asesoriaProyecto.getTitulo())) {
+                    totalHorasAsesorias = totalHorasAsesorias + asesoriaProyecto.getHorDedicadas().intValue();
+                    getListAsesoriaProyectos().add(asesoriaProyecto);
+                    asesoriaProyecto = new AsesoriaProyecto();
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Asesoría agregada.", ""));
+                    limpiarHorario();
+                } else {
+                    asesoriaProyecto = new AsesoriaProyecto();
+                }
+            }
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Ocurrio un Error agregando la Asesoría.", ""));
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String guardar() {
+
+        try {
+            if (totalHorasPlan != horasLegales) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "EL  plan debe tener : " + horasLegales + " y tiene: " + totalHorasPlan + " por favor ajuste su plan.", ""));
+                return null;
+            } else {
+
+                planTrabajo.setAsesoriaProyectoCollection(listAsesoriaProyectos);
+                planTrabajo.setDocenciaDirectaCollection(listDocenciaDirecta);
+                planTrabajo.setPublicacionCollection(listPublicaciones);
+                planTrabajo.setComisionEstudioCollection(listComisionEstudios);
+                planTrabajo.setDistribucionActividadCollection(listDistribucionActividades);
+                planTrabajo.setInvestigacionCollection(investigaciones);
+                planTrabajo.setFecPlanTrabajo(new Date());
+                planTrabajo.setCodDocente(docente);
+                // planTrabajo.setOtraActividadCollection();
+                persitenciaPlan.create(planTrabajo);
+
+            }
+
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Ocurrio un Error guardando el Plan de Trabajo.", ""));
             e.printStackTrace();
         }
         return null;
