@@ -1,1 +1,5 @@
-IMP DOCENTE_PLAN/DOCENTE_PLAN LOG=fichero.log FILE=DOCENTE_PLAN.dmp
+//Se debe parar en la carpeta donde esta el archivo a exportar en mi caso:
+C:\Users\Jorge Montoya\Documents\GitHub\Docente_Plan_Version_Septiembre\DB IMP DOCENTE_PLAN/DOCENTE_PLAN LOG=fichero.log FILE=DOCENTE_PLAN.dmp FULL=Y
+Ruta de la maquina virtual exportada:
+C:\Users\Jorge Montoya\Documents\Plan_TrabajoVM.ova
+
