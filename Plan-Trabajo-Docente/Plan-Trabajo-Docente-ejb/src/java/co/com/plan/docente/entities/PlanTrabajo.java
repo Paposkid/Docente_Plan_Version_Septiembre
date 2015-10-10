@@ -7,6 +7,7 @@ package co.com.plan.docente.entities;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -186,6 +187,9 @@ public class PlanTrabajo implements Serializable {
 
     @XmlTransient
     public Collection<Publicacion> getPublicacionCollection() {
+        if (publicacionCollection == null) {
+            publicacionCollection = new ArrayList<>();
+        }
         return publicacionCollection;
     }
 
@@ -195,6 +199,9 @@ public class PlanTrabajo implements Serializable {
 
     @XmlTransient
     public Collection<Seguimiento> getSeguimientoCollection() {
+         if (seguimientoCollection == null) {
+            seguimientoCollection = new ArrayList<>();
+        }
         return seguimientoCollection;
     }
 
@@ -204,6 +211,9 @@ public class PlanTrabajo implements Serializable {
 
     @XmlTransient
     public Collection<DocenciaDirecta> getDocenciaDirectaCollection() {
+        if (docenciaDirectaCollection == null) {
+            docenciaDirectaCollection = new ArrayList<>();
+        }
         return docenciaDirectaCollection;
     }
 
@@ -213,6 +223,9 @@ public class PlanTrabajo implements Serializable {
 
     @XmlTransient
     public Collection<ComisionEstudio> getComisionEstudioCollection() {
+        if (comisionEstudioCollection == null) {
+            comisionEstudioCollection = new ArrayList<>();
+        }
         return comisionEstudioCollection;
     }
 
@@ -222,6 +235,9 @@ public class PlanTrabajo implements Serializable {
 
     @XmlTransient
     public Collection<ActExtAcademica> getActExtAcademicaCollection() {
+        if (actExtAcademicaCollection == null) {
+            actExtAcademicaCollection = new ArrayList<>();
+        }
         return actExtAcademicaCollection;
     }
 
@@ -231,6 +247,9 @@ public class PlanTrabajo implements Serializable {
 
     @XmlTransient
     public Collection<DistribucionActividad> getDistribucionActividadCollection() {
+        if (distribucionActividadCollection == null) {
+            distribucionActividadCollection = new ArrayList<>();
+        }
         return distribucionActividadCollection;
     }
 
@@ -240,6 +259,9 @@ public class PlanTrabajo implements Serializable {
 
     @XmlTransient
     public Collection<OtraActividad> getOtraActividadCollection() {
+        if (otraActividadCollection == null) {
+            otraActividadCollection = new ArrayList<>();
+        }
         return otraActividadCollection;
     }
 
@@ -249,6 +271,9 @@ public class PlanTrabajo implements Serializable {
 
     @XmlTransient
     public Collection<Investigacion> getInvestigacionCollection() {
+        if (investigacionCollection == null) {
+            investigacionCollection = new ArrayList<>();
+        }
         return investigacionCollection;
     }
 
@@ -258,6 +283,9 @@ public class PlanTrabajo implements Serializable {
 
     @XmlTransient
     public Collection<AsesoriaProyecto> getAsesoriaProyectoCollection() {
+        if (asesoriaProyectoCollection == null) {
+            asesoriaProyectoCollection = new ArrayList<>();
+        }
         return asesoriaProyectoCollection;
     }
 

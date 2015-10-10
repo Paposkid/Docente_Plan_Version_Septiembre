@@ -80,8 +80,6 @@ Fecha: 19/04/2015
                                         <p:outputLabel  value="Agregar Curso: " />
                                         <p:commandButton id="btnAgregarMateria" update="@form:docDirecPanel"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarMateria()}" />
 
-                                        <h:outputText value="Saltar al Final: " />
-                                        <h:selectBooleanCheckbox value="#{crearPlanBean.skip}" />
 
                                     </h:panelGrid>
 
@@ -163,8 +161,6 @@ Fecha: 19/04/2015
                                         <p:outputLabel  value="Agregar Investigación: " />
                                         <p:commandButton  update="@form:panelInvestigacion"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarInvestigacion()}" />
 
-                                        <p:outputLabel value="Saltar al Final: " />
-                                        <h:selectBooleanCheckbox value="#{crearPlanBean.skip}" />
                                     </h:panelGrid>
                                     <p:dataTable style="width: 100%"
                                                  value="#{crearPlanBean.investigaciones}" var="invest"
@@ -235,8 +231,6 @@ Fecha: 19/04/2015
                                         <p:outputLabel  value="Agregar act de extensión " />
                                         <p:commandButton  update="@form:panelactExtension"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarExtension()}" />
 
-                                        <p:outputLabel value="Saltar al Final: " />
-                                        <h:selectBooleanCheckbox value="#{crearPlanBean.skip}" />
                                     </h:panelGrid>
                                     <p:dataTable style="width: 100%"
                                                  value="#{crearPlanBean.listActExtAcademicas}" var="extAcademica"
@@ -329,8 +323,6 @@ Fecha: 19/04/2015
                                         <p:outputLabel  value="Agregar Comisión: " />
                                         <p:commandButton  update="@form:panelactComision"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarComision()}" />
 
-                                        <p:outputLabel value="Saltar al Final: " />
-                                        <h:selectBooleanCheckbox value="#{crearPlanBean.skip}" />
                                     </h:panelGrid>
                                     <p:dataTable style="width: 100%"
                                                  value="#{crearPlanBean.listComisionEstudios}" var="comision"
@@ -417,8 +409,6 @@ Fecha: 19/04/2015
                                         <p:outputLabel  value="Agregar Publicación " />
                                         <p:commandButton  update=":formPricipal:panelPublicacion"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarPublicacon()}" />
 
-                                        <p:outputLabel value="Saltar al Final: " />
-                                        <h:selectBooleanCheckbox value="#{crearPlanBean.skip}" />
                                     </h:panelGrid>
                                     <p:dataTable style="width: 100%"
                                                  value="#{crearPlanBean.listPublicaciones}" var="publicacion"
@@ -491,8 +481,6 @@ Fecha: 19/04/2015
                                         <p:outputLabel  value="Agregar Asesoría " />
                                         <p:commandButton  update=":formPricipal:panelAsesroias"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarAsesorias()}" />
 
-                                        <p:outputLabel value="Saltar al Final: " />
-                                        <h:selectBooleanCheckbox value="#{crearPlanBean.skip}" />
                                     </h:panelGrid>
                                     <p:dataTable style="width: 100%"
                                                  value="#{crearPlanBean.listAsesoriaProyectos}" var="asesoria"
