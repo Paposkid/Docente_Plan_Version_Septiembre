@@ -12,11 +12,14 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -42,6 +45,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ComisionEstudio.findByFecObtencionAutorizacion", query = "SELECT c FROM ComisionEstudio c WHERE c.fecObtencionAutorizacion = :fecObtencionAutorizacion"),
     @NamedQuery(name = "ComisionEstudio.findByAporte", query = "SELECT c FROM ComisionEstudio c WHERE c.aporte = :aporte")})
 public class ComisionEstudio implements Serializable {
+
     @Column(name = "HOR_DEDICADAS")
     private BigInteger horDedicadas;
     private static final long serialVersionUID = 1L;
@@ -50,6 +54,8 @@ public class ComisionEstudio implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "COD_COMISION")
+    @SequenceGenerator(name = "SecuenciaComisionEstu", sequenceName = "SEQ_COMISION_ESTU", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SecuenciaComisionEstu")
     private BigDecimal codComision;
     @Basic(optional = false)
     @Column(name = "CEN_ESTUDIO")
@@ -197,5 +203,5 @@ public class ComisionEstudio implements Serializable {
     public void setHorDedicadas(BigInteger horDedicadas) {
         this.horDedicadas = horDedicadas;
     }
-    
+
 }

@@ -17,20 +17,28 @@ import co.com.plan.docente.entities.Docente;
 import co.com.plan.docente.entities.Facultad;
 import co.com.plan.docente.entities.Investigacion;
 import co.com.plan.docente.entities.Materia;
+import co.com.plan.docente.entities.OtraActividad;
 import co.com.plan.docente.entities.Parametro;
 import co.com.plan.docente.entities.PlanTrabajo;
 import co.com.plan.docente.entities.Publicacion;
 import co.com.plan.docente.entities.Usuario;
+import co.com.plan.docente.forentities.ActExtAcademicaFacadeLocal;
+import co.com.plan.docente.forentities.AsesoriaProyectoFacadeLocal;
+import co.com.plan.docente.forentities.ComisionEstudioFacadeLocal;
 import co.com.plan.docente.forentities.CoordinadorFacadeLocal;
+import co.com.plan.docente.forentities.DistribucionActividadFacadeLocal;
 import co.com.plan.docente.forentities.DocenciaDirectaFacadeLocal;
 import co.com.plan.docente.forentities.DocenteFacadeLocal;
 import co.com.plan.docente.forentities.FacultadFacadeLocal;
 import co.com.plan.docente.forentities.InvestigacionFacadeLocal;
 import co.com.plan.docente.forentities.MateriaFacadeLocal;
+import co.com.plan.docente.forentities.OtraActividadFacadeLocal;
 import co.com.plan.docente.forentities.ParametroFacadeLocal;
 import co.com.plan.docente.forentities.PlanTrabajoFacadeLocal;
+import co.com.plan.docente.forentities.PublicacionFacadeLocal;
 import co.com.plan.docente.forentities.UsuarioFacadeLocal;
 import co.com.plan.docente.vo.HorarioProfesorVO;
+import co.com.plan.docente.web.seguridad.SeguridadBean;
 import co.com.plan.docente.web.util.Constantes;
 import co.com.plan.docente.web.util.Util;
 import javax.faces.application.FacesMessage;
@@ -92,6 +100,8 @@ public class CrearPlanBean {
     private List<Facultad> facultades;
     private Publicacion publicacion;
     private List<Publicacion> listPublicaciones;
+    private OtraActividad otraActividad;
+    private List<OtraActividad> listOtrasActividades;
     private Usuario usuario;
     private Parametro parametro;
     private List<HorarioProfesorVO> listHorarioProfesorVO;
@@ -110,6 +120,7 @@ public class CrearPlanBean {
     private int totalHorasExtesion;
     private int totalHorasPublicaciones;
     private int totalHorasAsesorias;
+    private int totalHorasOtrasActividades;
     private String diaHorario;
     private int horadia;
     private Map<String, HorarioProfesorVO> horarioMap;
@@ -134,9 +145,43 @@ public class CrearPlanBean {
     private PlanTrabajoFacadeLocal persitenciaPlan;
     @EJB
     private CoordinadorFacadeLocal persitenciaCoordinador;
+    @EJB
+    private AsesoriaProyectoFacadeLocal persitenciaAsesoriaProyecto;
+    @EJB
+    private PublicacionFacadeLocal persitenciaPublicacion;
+    @EJB
+    private ComisionEstudioFacadeLocal persitenciaComisionEstudio;
+    @EJB
+    private DistribucionActividadFacadeLocal persitenciaDistribucionActividad;
+    @EJB
+    private OtraActividadFacadeLocal persitenciaOtraActividad;
+    @EJB
+    private ActExtAcademicaFacadeLocal persitenciaActExtAcademica;
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Getters & Setters">
+    public OtraActividad getOtraActividad() {
+        if (otraActividad == null) {
+            otraActividad = new OtraActividad();
+        }
+        return otraActividad;
+    }
+
+    public void setOtraActividad(OtraActividad otraActividad) {
+        this.otraActividad = otraActividad;
+    }
+
+    public List<OtraActividad> getListOtrasActividades() {
+        if (listOtrasActividades == null) {
+            listOtrasActividades = new ArrayList<>();
+        }
+        return listOtrasActividades;
+    }
+
+    public void setListOtrasActividades(List<OtraActividad> listOtrasActividades) {
+        this.listOtrasActividades = listOtrasActividades;
+    }
+
     public Coordinador getCoordinador() {
         if (coordinador == null) {
             coordinador = new Coordinador();
@@ -257,6 +302,14 @@ public class CrearPlanBean {
 
     public void setTotalHorasAsesorias(int totalHorasAsesorias) {
         this.totalHorasAsesorias = totalHorasAsesorias;
+    }
+
+    public int getTotalHorasOtrasActividades() {
+        return totalHorasOtrasActividades;
+    }
+
+    public void setTotalHorasOtrasActividades(int totalHorasOtrasActividades) {
+        this.totalHorasOtrasActividades = totalHorasOtrasActividades;
     }
 
     public int getHorasLegales() {
@@ -686,11 +739,15 @@ public class CrearPlanBean {
     @PostConstruct
     public void inicializacion() {
         try {
+            Map<String, Object> reqParameters = FacesContext.getCurrentInstance().getExternalContext().getRequestMap();
+            String documentoDocente = ((String) reqParameters.get("cedulaDocente"));
+             Docente auxDoc = new Docente();
             if (parametro == null) {
                 parametro = persistenciaParametro.find(new BigDecimal(Constantes.VALOR_UNO));
                 horasLegales = Integer.parseInt(parametro.getParValor());
                 listHorarioProfesorVO = Util.listaHorario();
-
+                auxDoc.setCedDocente(documentoDocente);
+                docente = persistenciaDocente.find(auxDoc);
             }
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Bienvenido al asistente de creación de su plan de trabajo.", ""));
         } catch (Exception e) {
@@ -796,6 +853,16 @@ public class CrearPlanBean {
         }
     }
 
+    public void eliminarOtrasActividades(OtraActividad otraActividad) {
+        try {
+            totalHorasOtrasActividades = totalHorasOtrasActividades - otraActividad.getHorDedicado().intValue();
+            listOtrasActividades.remove(otraActividad);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Otra Actividad eliminada.", ""));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public String sumarHoras(FlowEvent event) {
         try {
             //Deberia ser newstep
@@ -811,6 +878,8 @@ public class CrearPlanBean {
                 totalHorasPlan = totalHorasPlan + totalHorasPublicaciones;
             } else if (event.getOldStep().equals("tabAsesorias")) {
                 totalHorasPlan = totalHorasPlan + totalHorasAsesorias;
+            } else if (event.getOldStep().equals("tabOtras")) {
+                totalHorasPlan = totalHorasPlan + totalHorasOtrasActividades;
             }
             if (totalHorasPlan > horasLegales) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Ha superado las " + totalHorasPlan + " horas legales semanales.", ""));
@@ -1036,6 +1105,33 @@ public class CrearPlanBean {
         return null;
     }
 
+    public String agregarOtraActividad() {
+
+        try {
+            if (horarioProfesorVO == null
+                    || otraActividad.getNomActividad().equals("")
+                    || otraActividad.getDesActividad().equals("")) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe ingresar valores en los campos diferentes a cero.", ""));
+                return null;
+            } else {
+                otraActividad.setHorDedicado(new BigInteger(horarioProfesorVO.getIntencidadSemanal() + "".trim()));
+                if (llenarHorario(otraActividad.getNomActividad())) {
+                    totalHorasOtrasActividades = totalHorasOtrasActividades + otraActividad.getHorDedicado().intValue();
+                    getListOtrasActividades().add(otraActividad);
+                    otraActividad = new OtraActividad();
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Otra Actividad agregada.", ""));
+                    limpiarHorario();
+                } else {
+                    otraActividad = new OtraActividad();
+                }
+            }
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocurrio un Error agregando Otra Actividad.", ""));
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public String guardar() {
 
         try {
@@ -1051,26 +1147,53 @@ public class CrearPlanBean {
             docente.setCodDocente("5");
             coordinador.setCodCoordinador(BigDecimal.ONE);
             consejo.setCodConsejo(BigDecimal.ONE);
-           // docente.setNomDocente("Papo");
-            //docente.setTelDocente("8032233");
             // planTrabajo.setDocenciaDirectaCollection(listDocenciaDirecta);
             //planTrabajo.setAsesoriaProyectoCollection(listAsesoriaProyectos);
             //planTrabajo.setPublicacionCollection(listPublicaciones);
             //planTrabajo.setComisionEstudioCollection(listComisionEstudios);
             //planTrabajo.setDistribucionActividadCollection(listDistribucionActividades);
             //planTrabajo.setInvestigacionCollection(investigaciones);
+            //planTrabajo.setOtraActividadCollection(listOtrasActividades);
+            //planTrabajo.setActExtAcademicaCollection(listActExtAcademicas);
             planTrabajo.setFecPlanTrabajo(new Date());
             planTrabajo.setCodDocente(docente);
             planTrabajo.setCodCoordinador(coordinador);
             planTrabajo.setCodConsejo(consejo);
-            // planTrabajo.setOtraActividadCollection();
             persitenciaPlan.create(planTrabajo);
             for (DocenciaDirecta docAux : listDocenciaDirecta) {
                 docAux.setCodPlanTrabajo(planTrabajo);
                 persistenciaDocenciaDirecta.create(docAux);
             }
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "El Plan de Trabajo se guardo.", ""));
-           
+            for (AsesoriaProyecto aseAux : listAsesoriaProyectos) {
+                aseAux.setCodPlanTrabajo(planTrabajo);
+                persitenciaAsesoriaProyecto.create(aseAux);
+            }
+            for (Publicacion pubAux : listPublicaciones) {
+                pubAux.setCodPlantTrabajo(planTrabajo);
+                persitenciaPublicacion.create(pubAux);
+            }
+            for (ComisionEstudio comiAux : listComisionEstudios) {
+                comiAux.setCodPlanTrabajo(planTrabajo);
+                persitenciaComisionEstudio.create(comiAux);
+            }
+            for (DistribucionActividad disActAux : listDistribucionActividades) {
+                disActAux.setCodPlanTrabajo(planTrabajo);
+                persitenciaDistribucionActividad.create(disActAux);
+            }
+            for (Investigacion invAux : investigaciones) {
+                invAux.setCodPlanTrabajo(planTrabajo);
+                persistenciaInvestigación.create(invAux);
+            }
+            for (OtraActividad otraAux : listOtrasActividades) {
+                otraAux.setCodPlanTrabajo(planTrabajo);
+                persitenciaOtraActividad.create(otraAux);
+            }
+            for (ActExtAcademica actExtAux : listActExtAcademicas) {
+                actExtAux.setCodPlanTrabajo(planTrabajo);
+                persitenciaActExtAcademica.create(actExtAux);
+            }
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "El Plan de Trabajo se guardo.", ""));
+
             // }
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocurrio un Error guardando el Plan de Trabajo.", ""));

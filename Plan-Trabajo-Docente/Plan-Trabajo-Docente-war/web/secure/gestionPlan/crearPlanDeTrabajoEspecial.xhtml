@@ -34,7 +34,24 @@ Fecha: 19/04/2015
 
                     <h:form id="formPricipal">
 
-                        
+                        <p:confirmDialog id="idPConfirm" global="true">
+                            <f:facet name="message">
+                                Ingrese su cédula o la del docente al cual le va a realizar el Plan de trabajo <p:outputLabel style="font-weight: bold;" value="#{crearPlanBean.nombreArea}"/> ?
+                                <p:outputLabel  value="Cédula:" />
+                                <p:inputText id="grupo" value="#{crearPlanBean.cedulaDocente}" required="true" />
+
+                                <p:outputLabel  value="Plan Comisión de Estudio: " />
+                                <h:panelGroup>
+                                    <p:selectOneRadio id="sorAsesorDirecto" value="#{crearPlanBean.comisionEstudios}" layout="pageDirection">
+                                        <f:selectItem itemValue="S" />
+                                        <f:selectItem itemValue="N" />
+                                    </p:selectOneRadio>
+                                </h:panelGroup>
+
+                            </f:facet>
+                            <p:commandButton value="#{msg['general.aceptar']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                            <p:commandButton value="#{msg['general.cancelar']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
 
                         <p:growl id="growl" sticky="true" showDetail="true"/>
 

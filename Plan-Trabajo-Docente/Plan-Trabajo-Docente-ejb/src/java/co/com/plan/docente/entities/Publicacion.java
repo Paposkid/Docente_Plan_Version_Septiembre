@@ -11,11 +11,14 @@ import java.math.BigInteger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -44,6 +47,8 @@ public class Publicacion implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "COD_PUBLICACION")
+    @SequenceGenerator(name = "SecuenciaPublicacion", sequenceName = "SEQ_PUBLICACIONES", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SecuenciaPublicacion")
     private BigDecimal codPublicacion;
     @Basic(optional = false)
     @Column(name = "NOM_ARTICULO")

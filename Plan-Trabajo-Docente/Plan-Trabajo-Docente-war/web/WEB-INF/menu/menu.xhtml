@@ -19,24 +19,21 @@
                             rendered="#{seguridadBean.tieneOpcion(1)}"/>
                 <p:menuitem value="Curso" outcome="/secure/inicio" 
                             rendered="#{seguridadBean.tieneOpcion(1)}"/>
-                <p:menuitem value="Fechas Academicas" outcome="/secure/administracion/adminFechasAcademicas"
-                            rendered="#{seguridadBean.tieneOpcion(1)}"/>
                 <p:menuitem value="Facultad" outcome="/secure/administracion/adminFacultades"
-                            rendered="#{seguridadBean.tieneOpcion(1)}"/>
-                <p:menuitem value="Actividad Extra Academica" outcome="/secure/inicio"
                             rendered="#{seguridadBean.tieneOpcion(1)}"/>
                 <p:menuitem value="Usuarios" outcome="/secure/administracion/adminUsuario"
                             rendered="#{seguridadBean.tieneOpcion(1)}"/>
 
             </p:submenu>
             <p:submenu label="Plan de Trabajo" icon="ui-icon-copy" >
-                    <p:menuitem value="Crear Plan" outcome="/secure/gestionPlan/crearPlanDeTrabajo"/>
+                    <p:menuitem value="Crear Plan" outcome="/secure/gestionPlan/cuestionario"/>
                     <p:menuitem value="Consultar Plan" outcome="/secure/inicio"/>
                     <p:menuitem value="Subir Evidencia" outcome="/secure/inicio"/>
+                    <p:menuitem value="Evaluar Plan de Docente" outcome="/secure/inicio"/>
                     
             </p:submenu>
             <p:submenu label="Reportes" icon="ui-icon-clipboard" rendered="#{seguridadBean.tieneOpcion(1)}">
-                <p:menuitem value="En desarrollo" outcome="/secure/inicio"
+                <p:menuitem value="Sabana de Planes" outcome="/secure/inicio"
                             rendered="#{seguridadBean.tieneOpcion(1)}"/>
             </p:submenu>
 
