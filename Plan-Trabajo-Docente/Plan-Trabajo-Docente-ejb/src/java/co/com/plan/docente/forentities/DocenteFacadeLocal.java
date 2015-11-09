@@ -30,4 +30,6 @@ public interface DocenteFacadeLocal {
 
     int count();
     
+    public Docente findByCedula(String documnetoId);
+    
 }

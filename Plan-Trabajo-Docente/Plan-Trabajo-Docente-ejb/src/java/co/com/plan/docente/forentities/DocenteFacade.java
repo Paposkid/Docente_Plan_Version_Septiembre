@@ -9,6 +9,7 @@ import co.com.plan.docente.entities.Docente;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -27,5 +28,15 @@ public class DocenteFacade extends AbstractFacade<Docente> implements DocenteFac
     public DocenteFacade() {
         super(Docente.class);
     }
-    
+
+    @Override
+    public Docente findByCedula(String documnetoId) {
+        Docente doc = null;
+        TypedQuery<Docente> findByCedDocente;
+        findByCedDocente = em.createNamedQuery("Docente.findByCedDocente", Docente.class);
+        findByCedDocente.setParameter("cedDocente", documnetoId);
+        doc = findByCedDocente.getSingleResult();
+
+        return doc;
+    }
 }

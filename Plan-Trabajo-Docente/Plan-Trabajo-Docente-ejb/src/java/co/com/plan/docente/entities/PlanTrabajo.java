@@ -47,6 +47,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "PlanTrabajo.findByFechCalFin", query = "SELECT p FROM PlanTrabajo p WHERE p.fechCalFin = :fechCalFin"),
     @NamedQuery(name = "PlanTrabajo.findByObservacion", query = "SELECT p FROM PlanTrabajo p WHERE p.observacion = :observacion")})
 public class PlanTrabajo implements Serializable {
+
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
@@ -73,14 +74,24 @@ public class PlanTrabajo implements Serializable {
     @Size(max = 4000)
     @Column(name = "OBSERVACION")
     private String observacion;
+    @Size(max = 2000)
+    @Column(name = "OBSERVACION2")
+    private String observacion2;
+    @Size(max = 2000)
+    @Column(name = "OBSERVACION3")
+    private String observacion3;
+    @Column(name = "ESTADO")
+    private String estado;
+    @Column(name = "TIPO_PLAN")
+    private String tipoPlan;
     @JoinColumn(name = "COD_DOCENTE", referencedColumnName = "COD_DOCENTE")
     @ManyToOne(optional = false)
     private Docente codDocente;
     @JoinColumn(name = "COD_COORDINADOR", referencedColumnName = "COD_COORDINADOR")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     private Coordinador codCoordinador;
     @JoinColumn(name = "COD_CONSEJO", referencedColumnName = "COD_CONSEJO")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     private Consejo codConsejo;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "codPlantTrabajo")
     private Collection<Publicacion> publicacionCollection;
@@ -185,6 +196,38 @@ public class PlanTrabajo implements Serializable {
         this.codConsejo = codConsejo;
     }
 
+    public String getObservacion2() {
+        return observacion2;
+    }
+
+    public void setObservacion2(String observacion2) {
+        this.observacion2 = observacion2;
+    }
+
+    public String getObservacion3() {
+        return observacion3;
+    }
+
+    public void setObservacion3(String observacion3) {
+        this.observacion3 = observacion3;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getTipoPlan() {
+        return tipoPlan;
+    }
+
+    public void setTipoPlan(String tipoPlan) {
+        this.tipoPlan = tipoPlan;
+    }
+
     @XmlTransient
     public Collection<Publicacion> getPublicacionCollection() {
         if (publicacionCollection == null) {
@@ -199,7 +242,7 @@ public class PlanTrabajo implements Serializable {
 
     @XmlTransient
     public Collection<Seguimiento> getSeguimientoCollection() {
-         if (seguimientoCollection == null) {
+        if (seguimientoCollection == null) {
             seguimientoCollection = new ArrayList<>();
         }
         return seguimientoCollection;
@@ -317,5 +360,5 @@ public class PlanTrabajo implements Serializable {
     public String toString() {
         return "co.com.plan_docente.entities.PlanTrabajo[ codPlanTrabajo=" + codPlanTrabajo + " ]";
     }
-    
+
 }

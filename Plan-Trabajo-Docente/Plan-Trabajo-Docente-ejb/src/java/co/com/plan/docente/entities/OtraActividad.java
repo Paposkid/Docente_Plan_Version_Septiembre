@@ -49,17 +49,12 @@ public class OtraActividad implements Serializable {
     @Column(name = "COD_ACTIVIDAD")
     private BigDecimal codActividad;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 150)
     @Column(name = "NOM_ACTIVIDAD")
     private String nomActividad;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "HOR_DEDICADO")
     private BigInteger horDedicado;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 4000)
     @Column(name = "DES_ACTIVIDAD")
     private String desActividad;
     @JoinColumn(name = "COD_PLAN_TRABAJO", referencedColumnName = "COD_PLAN_TRABAJO")

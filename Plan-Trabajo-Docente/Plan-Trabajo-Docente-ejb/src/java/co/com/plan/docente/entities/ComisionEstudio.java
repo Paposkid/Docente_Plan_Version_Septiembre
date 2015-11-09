@@ -80,7 +80,7 @@ public class ComisionEstudio implements Serializable {
     @Column(name = "APORTE")
     private String aporte;
     @JoinColumn(name = "COD_PLAN_TRABAJO", referencedColumnName = "COD_PLAN_TRABAJO")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     private PlanTrabajo codPlanTrabajo;
 
     public ComisionEstudio() {

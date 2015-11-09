@@ -7,6 +7,7 @@ package co.com.plan.docente.web.util;
 
 import co.com.plan.docente.vo.HorarioProfesorVO;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,6 +15,20 @@ import java.util.List;
  * @author Jorge Montoya
  */
 public class Util {
+
+    public static final boolean compararFechas(Date fechaInicial, Date fechaFinal) {
+        boolean paso = true;
+        try {
+            if (fechaInicial.compareTo(fechaFinal) > 0) {
+                paso = false;
+            } else if (fechaInicial.compareTo(fechaFinal) == 0) {
+                paso = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return paso;
+    }
 
     public static final List<HorarioProfesorVO> listaHorario() {
 
@@ -34,6 +49,10 @@ public class Util {
             horarios.add(horarioAux);
             horarioAux = new HorarioProfesorVO();
             horarioAux.setDiaHora("LUNES-10am-12pm");
+            horarioAux.setIntencidadSemanal(2);
+            horarios.add(horarioAux);
+            horarioAux = new HorarioProfesorVO();
+            horarioAux.setDiaHora("LUNES-12pm-2pm");
             horarioAux.setIntencidadSemanal(2);
             horarios.add(horarioAux);
             horarioAux = new HorarioProfesorVO();
@@ -65,6 +84,10 @@ public class Util {
             horarioAux.setIntencidadSemanal(2);
             horarios.add(horarioAux);
             horarioAux = new HorarioProfesorVO();
+            horarioAux.setDiaHora("MARTES-12pm-2pm");
+            horarioAux.setIntencidadSemanal(2);
+            horarios.add(horarioAux);
+            horarioAux = new HorarioProfesorVO();
             horarioAux.setDiaHora("MARTES-2pm-4pm");
             horarioAux.setIntencidadSemanal(2);
             horarios.add(horarioAux);
@@ -90,6 +113,10 @@ public class Util {
             horarios.add(horarioAux);
             horarioAux = new HorarioProfesorVO();
             horarioAux.setDiaHora("MIERCOLES-10am-12pm");
+            horarioAux.setIntencidadSemanal(2);
+            horarios.add(horarioAux);
+            horarioAux = new HorarioProfesorVO();
+            horarioAux.setDiaHora("MIERCOLES-12pm-2pm");
             horarioAux.setIntencidadSemanal(2);
             horarios.add(horarioAux);
             horarioAux = new HorarioProfesorVO();
@@ -121,6 +148,10 @@ public class Util {
             horarioAux.setIntencidadSemanal(2);
             horarios.add(horarioAux);
             horarioAux = new HorarioProfesorVO();
+            horarioAux.setDiaHora("JUEVES-12pm-2pm");
+            horarioAux.setIntencidadSemanal(2);
+            horarios.add(horarioAux);
+            horarioAux = new HorarioProfesorVO();
             horarioAux.setDiaHora("JUEVES-2pm-4pm");
             horarioAux.setIntencidadSemanal(2);
             horarios.add(horarioAux);
@@ -146,6 +177,10 @@ public class Util {
             horarios.add(horarioAux);
             horarioAux = new HorarioProfesorVO();
             horarioAux.setDiaHora("VIERNES-10am-12pm");
+            horarioAux.setIntencidadSemanal(2);
+            horarios.add(horarioAux);
+            horarioAux = new HorarioProfesorVO();
+            horarioAux.setDiaHora("VIERNES-12pm-2pm");
             horarioAux.setIntencidadSemanal(2);
             horarios.add(horarioAux);
             horarioAux = new HorarioProfesorVO();
@@ -177,6 +212,10 @@ public class Util {
             horarioAux.setIntencidadSemanal(2);
             horarios.add(horarioAux);
             horarioAux = new HorarioProfesorVO();
+            horarioAux.setDiaHora("SABADO-12pm-2pm");
+            horarioAux.setIntencidadSemanal(2);
+            horarios.add(horarioAux);
+            horarioAux = new HorarioProfesorVO();
             horarioAux.setDiaHora("SABADO-2pm-4pm");
             horarioAux.setIntencidadSemanal(2);
             horarios.add(horarioAux);
@@ -202,6 +241,10 @@ public class Util {
             horarios.add(horarioAux);
             horarioAux = new HorarioProfesorVO();
             horarioAux.setDiaHora("LUNES-MIERCOLES-10am-12pm");
+            horarioAux.setIntencidadSemanal(4);
+            horarios.add(horarioAux);
+            horarioAux = new HorarioProfesorVO();
+            horarioAux.setDiaHora("LUNES-MIERCOLES-12pm-2pm");
             horarioAux.setIntencidadSemanal(4);
             horarios.add(horarioAux);
             horarioAux = new HorarioProfesorVO();
@@ -233,6 +276,10 @@ public class Util {
             horarioAux.setIntencidadSemanal(4);
             horarios.add(horarioAux);
             horarioAux = new HorarioProfesorVO();
+            horarioAux.setDiaHora("MARTES-JUEVES-12pm-2pm");
+            horarioAux.setIntencidadSemanal(4);
+            horarios.add(horarioAux);
+            horarioAux = new HorarioProfesorVO();
             horarioAux.setDiaHora("MARTES-JUEVES-2pm-4pm");
             horarioAux.setIntencidadSemanal(4);
             horarios.add(horarioAux);
@@ -258,6 +305,11 @@ public class Util {
             horarios.add(horarioAux);
             horarioAux = new HorarioProfesorVO();
             horarioAux.setDiaHora("MIERCOLES-VIERNES-10am-12pm");
+            horarioAux.setIntencidadSemanal(4);
+            horarios.add(horarioAux);
+            horarios.add(horarioAux);
+            horarioAux = new HorarioProfesorVO();
+            horarioAux.setDiaHora("MIERCOLES-VIERNES-12pm-2pm");
             horarioAux.setIntencidadSemanal(4);
             horarios.add(horarioAux);
             horarioAux = new HorarioProfesorVO();

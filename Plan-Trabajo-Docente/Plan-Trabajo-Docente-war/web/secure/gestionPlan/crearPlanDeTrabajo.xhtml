@@ -552,7 +552,7 @@ Fecha: 19/04/2015
                                                  value="#{crearPlanBean.listOtrasActividades}" var="otra"
                                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                                  rows="5" paginator="true" rowsPerPageTemplate="5,10"  rendered="#{not empty crearPlanBean.listOtrasActividades}"
-                                                 sortBy="#{otra.horDedicadas}">
+                                                 sortBy="#{otra.horDedicado}">
 
                                         <p:column width="30">
                                             <p:commandButton icon="ui-icon-pencil" immediate="true">
@@ -561,7 +561,7 @@ Fecha: 19/04/2015
                                             </p:commandButton>
                                         </p:column>
                                         <p:column width="30">
-                                            <p:commandButton id="btnEliminarOtras" update="@form:panelOtras"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarOtrasActividades()}" />
+                                            <p:commandButton id="btnEliminarOtras" update="@form:panelOtras"  icon="ui-icon-closethick" action="#{crearPlanBean.eliminarOtrasActividades(otra)}" />
                                         </p:column>
                                         <p:column  headerText="Nombre Actividad"
                                                    sortBy="#{otra.nomActividad}">

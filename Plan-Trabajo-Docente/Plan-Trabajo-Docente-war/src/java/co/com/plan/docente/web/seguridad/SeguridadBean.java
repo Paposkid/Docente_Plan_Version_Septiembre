@@ -132,8 +132,7 @@ public class SeguridadBean {
 
     public String actualizarClave() {
         persistenciaUsuario.actualizarClave(usuNombre, usuContrasena);
-
-        JSFUtils.addMessage(FacesMessage.SEVERITY_INFO, "Proceso Correcto: La contraseña ha sido actualizada correctamente.");
+        JSFUtils.addMessage(FacesMessage.SEVERITY_INFO, "La contraseña ha sido actualizada correctamente.");
         return "/secure/inicio?faces-redirect=true";
     }
 }
