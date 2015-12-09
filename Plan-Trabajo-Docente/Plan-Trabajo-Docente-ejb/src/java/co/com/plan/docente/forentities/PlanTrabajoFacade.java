@@ -5,10 +5,13 @@
  */
 package co.com.plan.docente.forentities;
 
+import co.com.plan.docente.entities.Docente;
 import co.com.plan.docente.entities.PlanTrabajo;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -26,6 +29,16 @@ public class PlanTrabajoFacade extends AbstractFacade<PlanTrabajo> implements Pl
 
     public PlanTrabajoFacade() {
         super(PlanTrabajo.class);
+    }
+
+    @Override
+    public List<PlanTrabajo> findAllByEstado(String estado) {
+      List<PlanTrabajo> retorno = null;
+        TypedQuery<PlanTrabajo> findByEstado;
+        findByEstado = em.createNamedQuery("PlanTrabajo.findByEstado", PlanTrabajo.class);
+        findByEstado.setParameter("estado", estado);
+        retorno = findByEstado.getResultList();
+        return retorno;
     }
     
 }

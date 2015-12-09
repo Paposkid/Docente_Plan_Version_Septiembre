@@ -1,16 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
+Sistema De Administración De Contratos
 -->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>TODO supply a title</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/WEB-INF/templates/plan-default-template.xhtml">
+        <ui:define name="title">
+            #{msg['txt.plan']} - Primera Evalución Plan
+        </ui:define>
+
+        <ui:define name="breadCrumb">
+            <p:breadCrumb homeDisplay="text">
+                <p:menuitem icon="ui-icon-contact" url="#" onclick="return false;" />
+                <p:menuitem value="Plan de Trabajo / Primera Evalución Plan" url="#" />
+            </p:breadCrumb>
+        </ui:define>
+
+        <ui:define name="content">
+            <h:form id="frmGestionPlan">
+                <p:panel>
+                    <f:facet name="header">
+                        <p:outputLabel style="float: left; font-size: 20px !important;" value="Primera Evalución Plan"/>
+                    </f:facet>
+                    <p:panelGrid id="pgBandejaEntrda" columns="2" style="width: 100%;">
+
+                        <p:dataTable
+                            style="width: 100%" emptyMessage="No hay planes aevaluar." 
+                            value="#{primeraEvaluacionPlanBean.planes}" var="plan"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rows="4" paginator="true" paginatorPosition="bottom">
+                            <p:column style="background-color: blue" width="60">
+                                <p:commandButton update=":frmGestionPlan:pgDetPlan" icon="ui-icon-pencil" action="#{primeraEvaluacionPlanBean.setPlanTrabajo(plan)}" immediate="true"/>
+                            </p:column>
+                            <p:column headerText="Código del Plan">
+                                <p:outputLabel value="#{plan.codPlanTrabajo}" />
+                            </p:column>
+                            <p:column   headerText="Nombre del Docente">
+                                <p:outputLabel value="#{plan.codDocente.nomDocente}" />
+                            </p:column>
+                            <p:column  headerText="Fecha de Creación">
+                                <p:outputLabel value="#{plan.fecPlanTrabajo}" >
+                                    <f:convertDateTime locale="es_CO" pattern="dd/MM/yyyy" timeZone="GMT-5" />
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column  headerText="Tipo de Plan">
+                                <p:outputLabel value="#{plan.tipoPlan}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panelGrid>
+                </p:panel>
+                
+                 <p:panel>
+                    <f:facet name="header">
+                        <p:outputLabel style="float: left; font-size: 20px !important;"  value="Detalle Plan de Trabajo"/>
+                        <p:commandButton style="float: right;" id="idAgregar" update="@form" rendered="#{not empty primeraEvaluacionPlanBean.planes}"
+                                         value="Guardar" action="#{primeraEvaluacionPlanBean.evaluar}">
+                        </p:commandButton>
+                        <p:spacer width="40" height="0"  />
+                        <p:commandButton style="float: right;" value="#{msg['txt.cancelar']}" immediate="true"
+                                         update="@form"
+                                         actionListener="#{primeraEvaluacionPlanBean.inicializacion()}"/>
+                    </f:facet>
+                    <p:panelGrid id="pgDetPlan" style="width: 40%;">
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel id="lblReclamacioId" for="itrelcmaionId" value="Código del Plan"/>
+                            </p:column>
+                            <p:column>
+                                <p:inputText  readonly="true" id="itrelcmaionId" value="#{primeraEvaluacionPlanBean.planTrabajo.codPlanTrabajo}"/>
+                            </p:column>
+
+                           
+
+                            <p:column>
+                                <p:outputLabel id="lblDescrip" for="itDescrip" value="Tipo de Plan"/>
+                            </p:column>
+                            <p:column>
+                                <p:inputTextarea cols="25" rows="4" readonly="true" id="itDescrip" value="#{primeraEvaluacionPlanBean.planTrabajo.tipoPlan}"/>
+                            </p:column>
+
+                       <!--  
+                        <p:column>
+                                <p:outputLabel id="lblAsesorObj" for="itasesorOb" value="Nombre del Docente"/>
+                            </p:column>
+                            <p:column>
+                                <p:inputText  readonly="true" id="itasesorOb" value="#{primeraEvaluacionPlanBean.planTrabajo.codDocente.nomDocente}"/>
+                            </p:column>
+                       
+                       
+                       <p:column>
+                                <p:outputLabel id="lblArea" for="itcuestionario" value="Área:"/>
+                            </p:column>
+                            <p:column>
+                                <p:inputTextarea cols="25" rows="4" readonly="true" id="itAreaDescrip" value="#{primeraEvaluacionPlanBean.planTrabajo}"/>
+                            </p:column>
+
+                            <p:column>
+                                <p:outputLabel id="lblPregunta" for="itcuestionario" value="Tipo Reclamación:"/>
+                            </p:column>
+                            <p:column>
+                                <p:inputTextarea cols="25" rows="4" readonly="true" id="itcuestionario" value="#{primeraEvaluacionPlanBean.reclamacion.cueId.cueNombre}"/>
+                            </p:column> -->
+                        </p:row>
+                        
+                    </p:panelGrid>
+                </p:panel>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
 </html>

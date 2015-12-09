@@ -5,9 +5,10 @@
         <group>
             <file>file:/C:/Users/Jorge%20Montoya/Documents/GitHub/Docente_Plan_Version_Septiembre/Plan-Trabajo-Docente/Plan-Trabajo-Docente-war/web/secure/gestionPlan/cuestionario.xhtml</file>
             <file>file:/C:/Users/Jorge%20Montoya/Documents/GitHub/Docente_Plan_Version_Septiembre/Plan-Trabajo-Docente/Plan-Trabajo-Docente-war/src/java/co/com/plan/docente/web/beans/gestion/CrearPlanBean.java</file>
-            <file>file:/C:/Users/Jorge%20Montoya/Documents/GitHub/Docente_Plan_Version_Septiembre/Plan-Trabajo-Docente/Plan-Trabajo-Docente-war/src/java/co/com/plan/docente/web/beans/gestion/CrearPlanEspecialBean.java</file>
-            <file>file:/C:/Users/Jorge%20Montoya/Documents/GitHub/Docente_Plan_Version_Septiembre/Plan-Trabajo-Docente/Plan-Trabajo-Docente-war/web/secure/gestionPlan/crearPlanDeTrabajo.xhtml</file>
             <file>file:/C:/Users/Jorge%20Montoya/Documents/GitHub/Docente_Plan_Version_Septiembre/Plan-Trabajo-Docente/Plan-Trabajo-Docente-war/web/secure/gestionPlan/crearPlanDeTrabajoEspecial.xhtml</file>
+            <file>file:/C:/Users/Jorge%20Montoya/Documents/GitHub/Docente_Plan_Version_Septiembre/Plan-Trabajo-Docente/Plan-Trabajo-Docente-war/src/java/co/com/plan/docente/web/beans/gestion/PrimeraEvaluacionPlanBean.java</file>
+            <file>file:/C:/Users/Jorge%20Montoya/Documents/GitHub/Docente_Plan_Version_Septiembre/Plan-Trabajo-Docente/Plan-Trabajo-Docente-war/web/secure/gestionPlan/crearPlanDeTrabajo.xhtml</file>
+            <file>file:/C:/Users/Jorge%20Montoya/Documents/GitHub/Docente_Plan_Version_Septiembre/Plan-Trabajo-Docente/Plan-Trabajo-Docente-war/web/secure/gestionPlan/primeraEvaluacion.xhtml</file>
             <file>file:/C:/Users/Jorge%20Montoya/Documents/GitHub/Docente_Plan_Version_Septiembre/Plan-Trabajo-Docente/Plan-Trabajo-Docente-war/src/java/co/com/plan/docente/web/beans/gestion/CuestionarioBean.java</file>
             <file>file:/C:/Users/Jorge%20Montoya/Documents/GitHub/Docente_Plan_Version_Septiembre/Plan-Trabajo-Docente/Plan-Trabajo-Docente-war/web/WEB-INF/menu/menu.xhtml</file>
         </group>

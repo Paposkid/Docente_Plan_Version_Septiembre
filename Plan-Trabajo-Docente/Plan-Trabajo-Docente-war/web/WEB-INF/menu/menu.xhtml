@@ -27,12 +27,12 @@
                     <p:menuitem value="Crear Plan" outcome="/secure/gestionPlan/cuestionario"/>
                     <p:menuitem value="Consultar Horario Plan" outcome="/secure/gestionPlan/consultarHorario"/>
                     <p:menuitem value="Subir Evidencia" outcome="/secure/inicio"/>
-                    <p:menuitem value="Evaluar Plan de Docente" outcome="/secure/inicio"/>
+                    <p:menuitem value="Primera Evalucaión" outcome="/secure/gestionPlan/primeraEvaluacion"/>
                     
             </p:submenu>
-            <p:submenu label="Reportes" icon="ui-icon-clipboard" rendered="#{seguridadBean.tieneOpcion(1)}">
+            <p:submenu label="Reportes" icon="ui-icon-clipboard" rendered="false">
                 <p:menuitem value="Sabana de Planes" outcome="/secure/reporte/sabanaPlan"
-                            rendered="#{seguridadBean.tieneOpcion(1)}"/>
+                            rendered="false"/>
             </p:submenu>
 
         </p:menubar>

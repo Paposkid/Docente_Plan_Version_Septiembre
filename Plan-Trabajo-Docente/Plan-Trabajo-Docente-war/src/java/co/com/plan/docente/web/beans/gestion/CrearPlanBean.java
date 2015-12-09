@@ -1165,7 +1165,7 @@ public class CrearPlanBean {
 
         try {
             if (totalHorasPlan != horasLegales) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "EL  plan debe tener : " + horasLegales + " y tiene: " + totalHorasPlan + " por favor ajuste su plan.", ""));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "EL  plan debe tener : " + horasLegales + "horas y tiene: " + totalHorasPlan + " horas por favor ajuste su plan.", ""));
                 return null;
             } else {
                 planTrabajo = new PlanTrabajo();

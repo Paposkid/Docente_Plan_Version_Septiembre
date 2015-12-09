@@ -30,4 +30,5 @@ public interface PlanTrabajoFacadeLocal {
 
     int count();
     
+    public List<PlanTrabajo> findAllByEstado(String estado);
 }

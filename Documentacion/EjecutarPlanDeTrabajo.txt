@@ -1,0 +1,12 @@
+1.Ejecutar la maquina virtual
+2.Una vez este encedida, hacer dobe clic en el programa llamado NetBeans8.0
+3.Una vez termine de cargar hacer clic derecho sobre Plan-Trabajo-Docente y clic en run
+4.Esperar unos 30 segundo a que el aplicativo levante
+5.En el navegador aparecerá cuando se termine de desplegar la app
+6.Ingresar usuario: Jorge Armando
+7.Contraseña: Apple@1349
+8.Hacer clic en iniciar sesion.
+
+NOTA: Para crear un docente, primero se debe crear un usuario y eseusuario agregarlo en la opcion del docente (Administración / Docente) Busqueda por cedula.
+
+https://www.youtube.com/watch?v=W49J8Udx7uw
