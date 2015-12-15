@@ -1146,10 +1146,10 @@ public class CrearPlanBean {
                 if (llenarHorario(otraActividad.getNomActividad())) {
                     totalHorasOtrasActividades = totalHorasOtrasActividades + otraActividad.getHorDedicado().intValue();
                     getListOtrasActividades().add(otraActividad);
+                    sumarHoras("tabOtras", otraActividad.getHorDedicado().intValue());
                     otraActividad = new OtraActividad();
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Otra Actividad agregada.", ""));
                     limpiarHorario();
-                    sumarHoras("tabOtras", otraActividad.getHorDedicado().intValue());
                 } else {
                     otraActividad = new OtraActividad();
                 }
@@ -1203,10 +1203,10 @@ public class CrearPlanBean {
                     comiAux.setCodPlanTrabajo(planTrabajo);
                     persitenciaComisionEstudio.create(comiAux);
                 }
-                for (DistribucionActividad disActAux : listDistribucionActividades) {
+                /*for (DistribucionActividad disActAux : listDistribucionActividades) {
                     disActAux.setCodPlanTrabajo(planTrabajo);
                     persitenciaDistribucionActividad.create(disActAux);
-                }
+                }*/
                 for (Investigacion invAux : investigaciones) {
                     invAux.setCodPlanTrabajo(planTrabajo);
                     persistenciaInvestigación.create(invAux);

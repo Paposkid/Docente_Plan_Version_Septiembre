@@ -24,7 +24,7 @@ Sistema De Administración De Contratos
             <h:form id="frmGestionPlan">
                 <p:panel>
                     <f:facet name="header">
-                        <p:outputLabel style="float: left; font-size: 20px !important;" value="Primera Evalución Plan"/>
+                        <p:outputLabel value="Primera Evalución Plan"/>
                     </f:facet>
                     <p:panelGrid id="pgBandejaEntrda" columns="2" style="width: 100%;">
 
@@ -34,7 +34,7 @@ Sistema De Administración De Contratos
                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                             rows="4" paginator="true" paginatorPosition="bottom">
                             <p:column style="background-color: blue" width="60">
-                                <p:commandButton update=":frmGestionPlan:pgDetPlan" icon="ui-icon-pencil" action="#{primeraEvaluacionPlanBean.setPlanTrabajo(plan)}" immediate="true"/>
+                                <p:commandButton update=":frmGestionPlan:pgDetPlan" icon="ui-icon-pencil" action="#{primeraEvaluacionPlanBean.setPlanTrabajo(plan)}"/>
                             </p:column>
                             <p:column headerText="Código del Plan">
                                 <p:outputLabel value="#{plan.codPlanTrabajo}" />
@@ -54,61 +54,246 @@ Sistema De Administración De Contratos
                     </p:panelGrid>
                 </p:panel>
                 
-                 <p:panel>
-                    <f:facet name="header">
-                        <p:outputLabel style="float: left; font-size: 20px !important;"  value="Detalle Plan de Trabajo"/>
-                        <p:commandButton style="float: right;" id="idAgregar" update="@form" rendered="#{not empty primeraEvaluacionPlanBean.planes}"
-                                         value="Guardar" action="#{primeraEvaluacionPlanBean.evaluar}">
-                        </p:commandButton>
-                        <p:spacer width="40" height="0"  />
-                        <p:commandButton style="float: right;" value="#{msg['txt.cancelar']}" immediate="true"
-                                         update="@form"
-                                         actionListener="#{primeraEvaluacionPlanBean.inicializacion()}"/>
-                    </f:facet>
-                    <p:panelGrid id="pgDetPlan" style="width: 40%;">
-                        <p:row>
-                            <p:column>
-                                <p:outputLabel id="lblReclamacioId" for="itrelcmaionId" value="Código del Plan"/>
-                            </p:column>
-                            <p:column>
-                                <p:inputText  readonly="true" id="itrelcmaionId" value="#{primeraEvaluacionPlanBean.planTrabajo.codPlanTrabajo}"/>
-                            </p:column>
+                 
+                 <p:wizard id="pgDetPlan" nextLabel="Siguiente" backLabel="Atrás" style="background: whitesmoke"   flowListener="#{primeraEvaluacionPlanBean.onFlowProcess}">
 
-                           
+                            <p:tab id="docenciaDirecta" title="DOCENCIA ">
+                                <p:panel  id="docDirecPanel" header="Docencia Directa Detalle">
+                                    
+                                    <p:dataTable
+                                        style="width: 100%"
+                                        value="#{primeraEvaluacionPlanBean.listDocenciaDirecta}" var="docDirecta"
+                                        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                        rows="5" paginator="true" rowsPerPageTemplate="5,10"  rendered="#{not empty primeraEvaluacionPlanBean.listDocenciaDirecta}"
+                                        sortBy="#{docDirecta.horSemanal}">
 
-                            <p:column>
-                                <p:outputLabel id="lblDescrip" for="itDescrip" value="Tipo de Plan"/>
-                            </p:column>
-                            <p:column>
-                                <p:inputTextarea cols="25" rows="4" readonly="true" id="itDescrip" value="#{primeraEvaluacionPlanBean.planTrabajo.tipoPlan}"/>
-                            </p:column>
+                                        <p:column  headerText="Nombre Materia"
+                                                   sortBy="#{docDirecta.codMateria.nomMateria}">
+                                            <p:outputLabel value="#{docDirecta.codMateria.nomMateria}" />
+                                        </p:column>
 
-                       <!--  
-                        <p:column>
-                                <p:outputLabel id="lblAsesorObj" for="itasesorOb" value="Nombre del Docente"/>
-                            </p:column>
-                            <p:column>
-                                <p:inputText  readonly="true" id="itasesorOb" value="#{primeraEvaluacionPlanBean.planTrabajo.codDocente.nomDocente}"/>
-                            </p:column>
-                       
-                       
-                       <p:column>
-                                <p:outputLabel id="lblArea" for="itcuestionario" value="Área:"/>
-                            </p:column>
-                            <p:column>
-                                <p:inputTextarea cols="25" rows="4" readonly="true" id="itAreaDescrip" value="#{primeraEvaluacionPlanBean.planTrabajo}"/>
-                            </p:column>
+                                        <p:column  headerText="Código Curso"
+                                                   sortBy="#{docDirecta.codMateria.matCodigoMateria}">
+                                            <p:outputLabel value="#{docDirecta.codMateria.matCodigoMateria}" />
+                                        </p:column>
 
-                            <p:column>
-                                <p:outputLabel id="lblPregunta" for="itcuestionario" value="Tipo Reclamación:"/>
-                            </p:column>
-                            <p:column>
-                                <p:inputTextarea cols="25" rows="4" readonly="true" id="itcuestionario" value="#{primeraEvaluacionPlanBean.reclamacion.cueId.cueNombre}"/>
-                            </p:column> -->
-                        </p:row>
-                        
-                    </p:panelGrid>
-                </p:panel>
+                                        <p:column  headerText="Grupo"
+                                                   sortBy="#{docDirecta.grupo}">
+                                            <p:outputLabel value="#{docDirecta.grupo}" />
+                                        </p:column>
+                                        <p:column  headerText="Número Estudiantes"
+                                                   sortBy="#{docDirecta.nmrEstudiantes}">
+                                            <p:outputLabel value="#{docDirecta.nmrEstudiantes}" />
+                                        </p:column>
+                                        <p:column  headerText="Hora Semanal"
+                                                   sortBy="#{docDirecta.horSemanal}">
+                                            <p:outputLabel value="#{docDirecta.horSemanal}" />
+                                        </p:column>
+                                    </p:dataTable>
+
+                                </p:panel>
+                            </p:tab>
+
+                            <p:tab id="investigacion" title="INVESTIGACIÓN">
+                                <p:panel id="panelInvestigacion" header="Investigación Detalle">
+                                    <p:dataTable style="width: 100%"
+                                                 value="#{primeraEvaluacionPlanBean.investigaciones}" var="invest"
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 rows="15" paginator="true" rowsPerPageTemplate="5,10"  rendered="#{not empty primeraEvaluacionPlanBean.investigaciones}"
+                                                 sortBy="#{invest.horSemanal}">
+
+                                        <p:column  headerText="Nombre Semillero"
+                                                   sortBy="#{invest.nomSemillero}">
+                                            <p:outputLabel value="#{invest.nomSemillero}" />
+                                        </p:column>
+                                        <p:column  headerText="Tipo de Vinculo"
+                                                   sortBy="#{invest.tipVinculo}">
+                                            <p:outputLabel value="#{invest.tipVinculo}" />
+                                        </p:column>
+                                        <p:column  headerText="Actividad Desarrollada"
+                                                   sortBy="#{invest.actDesarrollada}">
+                                            <p:outputLabel value="#{invest.actDesarrollada}" />
+                                        </p:column>
+                                        <p:column  headerText="Productos para cada Actividad"
+                                                   sortBy="#{invest.actProductos}">
+                                            <p:outputLabel value="#{invest.actProductos}" />
+                                        </p:column>
+                                        <p:column  headerText="Hora Semanal"
+                                                   sortBy="#{invest.horSemanal}">
+                                            <p:outputLabel value="#{invest.horSemanal}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                            </p:tab>
+                    
+                            <p:tab id="extension" title="EXTENSIÓN ">
+                                <p:panel id="panelactExtension" header="ACTIVIDADES DE EXTENSIÓN ACADÉMICAS Y/O PROYECCIÓN SOCIAL DETALLE">
+                                    
+                                    <p:dataTable style="width: 100%"
+                                                 value="#{primeraEvaluacionPlanBean.listActExtAcademicas}" var="extAcademica"
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 rows="5" paginator="true" rowsPerPageTemplate="5,10"  rendered="#{not empty primeraEvaluacionPlanBean.listActExtAcademicas}"
+                                                 sortBy="#{extAcademica.horDedicadas}">
+
+                                        <p:column  headerText="Nombre Actividad"
+                                                   sortBy="#{extAcademica.nomActividad}">
+                                            <p:outputLabel value="#{extAcademica.nomActividad}" />
+                                        </p:column>
+                                        <p:column  headerText="Fecha Inicio"
+                                                   sortBy="#{extAcademica.fecInicio}">
+                                            <p:outputLabel value="#{extAcademica.fecInicio}" >
+                                                <f:convertDateTime locale="es_CO" pattern="dd/MM/yyyy" timeZone="GMT-5" />
+                                            </p:outputLabel>
+                                        </p:column>
+
+                                        <p:column  headerText="Fecha Fin"
+                                                   sortBy="#{extAcademica.fec}">
+                                            <p:outputLabel value="#{extAcademica.fec}" >
+                                                <f:convertDateTime locale="es_CO" pattern="dd/MM/yyyy" timeZone="GMT-5" />
+                                            </p:outputLabel>
+                                        </p:column>
+
+                                        <p:column  headerText="Horas Dedicadas"
+                                                   sortBy="#{extAcademica.horDedicadas}">
+                                            <p:outputLabel value="#{extAcademica.horDedicadas}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                            </p:tab>
+
+                            <p:tab id="comision" title="COMISIÓN">
+                                <p:panel id="panelactComision" header="COMISIÓN DE ESTUDIOS DETALLE">
+                                    <p:dataTable style="width: 100%"
+                                                 value="#{primeraEvaluacionPlanBean.listComisionEstudios}" var="comision"
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 rows="5" paginator="true" rowsPerPageTemplate="5,10"  rendered="#{not empty primeraEvaluacionPlanBean.listComisionEstudios}"
+                                                 sortBy="#{comision.horDedicadas}">
+
+                                        <p:column  headerText="Nombre Específico del Estudio"
+                                                   sortBy="#{comision.nomEspecEstudio}">
+                                            <p:outputLabel value="#{comision.nomEspecEstudio}" />
+                                        </p:column>
+                                        <p:column  headerText="Fecha Inicio"
+                                                   sortBy="#{comision.fecInicio}">
+                                            <p:outputLabel value="#{comision.fecInicio}" >
+                                                <f:convertDateTime locale="es_CO" pattern="dd/MM/yyyy" timeZone="GMT-5" />
+                                            </p:outputLabel>
+                                        </p:column>
+                                        <p:column  headerText="Fecha Graduacion"
+                                                   sortBy="#{comision.fecGraduacion}">
+                                            <p:outputLabel value="#{comision.fecGraduacion}" >
+                                                <f:convertDateTime locale="es_CO" pattern="dd/MM/yyyy" timeZone="GMT-5" />
+                                            </p:outputLabel>
+                                        </p:column>
+
+                                        <p:column  headerText="Fecha Obtención de Autorización"
+                                                   sortBy="#{comision.fecObtencionAutorizacion}">
+                                            <p:outputLabel value="#{comision.fecObtencionAutorizacion}" >
+                                                <f:convertDateTime locale="es_CO" pattern="dd/MM/yyyy" timeZone="GMT-5" />
+                                            </p:outputLabel>
+                                        </p:column>
+                                        <p:column  headerText="Aportes institucionales obtenidos y/o esperados"
+                                                   sortBy="#{comision.aporte}">
+                                            <p:outputLabel value="#{comision.aporte}" />
+                                        </p:column>
+                                        <p:column  headerText="Horas Dedicadas"
+                                                   sortBy="#{comision.horDedicadas}">
+                                            <p:outputLabel value="#{comision.horDedicadas}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                            </p:tab>
+
+                            <p:tab id="tabPublicaciones" title="PUBLICACIONES ">
+                                <p:panel id="panelPublicacion" header="PUBLICACIONES DETALLE">
+                                    <p:dataTable style="width: 100%"
+                                                 value="#{primeraEvaluacionPlanBean.listPublicaciones}" var="publicacion"
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 rows="5" paginator="true" rowsPerPageTemplate="5,10"  rendered="#{not empty primeraEvaluacionPlanBean.listPublicaciones}"
+                                                 sortBy="#{publicacion.horDedicadas}">
+
+                                        <p:column  headerText="Nombre del artículo"
+                                                   sortBy="#{publicacion.nomArticulo}">
+                                            <p:outputLabel value="#{publicacion.nomArticulo}" />
+                                        </p:column>
+                                        <p:column  headerText="Autor Principal"
+                                                   sortBy="#{publicacion.autPrincipal}">
+                                            <p:outputLabel value="#{publicacion.autPrincipal}" >
+                                            </p:outputLabel>
+                                        </p:column>
+                                        <p:column  headerText="Co-Autor"
+                                                   sortBy="#{publicacion.coautor}">
+                                            <p:outputLabel value="#{publicacion.coautor}" >
+                                            </p:outputLabel>
+                                        </p:column>
+                                        <p:column  headerText="Tema Principal"
+                                                   sortBy="#{publicacion.temPrincipal}">
+                                            <p:outputLabel value="#{publicacion.temPrincipal}" />
+                                        </p:column>
+                                        <p:column  headerText="Horas Dedicadas"
+                                                   sortBy="#{publicacion.horDedicadas}">
+                                            <p:outputLabel value="#{publicacion.horDedicadas}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                            </p:tab>
+
+                            <p:tab id="tabAsesorias" title="ASESORÍAS">
+                                <p:panel id="panelAsesroias" header="ASESORÍAS EN PROYECTOS Y TRABAJOS DE GRADO DETALLE">
+                                    <p:dataTable style="width: 100%"
+                                                 value="#{primeraEvaluacionPlanBean.listAsesoriaProyectos}" var="asesoria"
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 rows="5" paginator="true" rowsPerPageTemplate="5,10"  rendered="#{not empty primeraEvaluacionPlanBean.listAsesoriaProyectos}"
+                                                 sortBy="#{asesoria.horDedicadas}">
+
+                                        <p:column  headerText="Integrantes del Equipo"
+                                                   sortBy="#{asesoria.nomEstudiante}">
+                                            <p:outputLabel value="#{asesoria.nomEstudiante}" />
+                                        </p:column>
+                                        <p:column  headerText="Título"
+                                                   sortBy="#{asesoria.titulo}">
+                                            <p:outputLabel value="#{asesoria.titulo}" >
+                                            </p:outputLabel>
+                                        </p:column>
+                                        <p:column  headerText="Aspectos Relevantes"
+                                                   sortBy="#{asesoria.aspRelevante}">
+                                            <p:outputLabel value="#{asesoria.aspRelevante}" >
+                                            </p:outputLabel>
+                                        </p:column>
+                                        <p:column  headerText="Horas Dedicadas"
+                                                   sortBy="#{asesoria.horDedicadas}">
+                                            <p:outputLabel value="#{asesoria.horDedicadas}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                            </p:tab>
+
+                            <p:tab id="tabOtras" title="OTRAS ACTIVIDADES">
+                                <p:panel id="panelOtras" header="OTRAS ACTIVIDADES">
+                                    <p:dataTable style="width: 100%"
+                                                 value="#{primeraEvaluacionPlanBean.listOtrasActividades}" var="otra"
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 rows="5" paginator="true" rowsPerPageTemplate="5,10"  rendered="#{not empty primeraEvaluacionPlanBean.listOtrasActividades}"
+                                                 sortBy="#{otra.horDedicado}">
+
+                                        <p:column  headerText="Nombre Actividad"
+                                                   sortBy="#{otra.nomActividad}">
+                                            <p:outputLabel value="#{otra.nomActividad}" />
+                                        </p:column>
+                                        <p:column  headerText="Descripción Actividad"
+                                                   sortBy="#{otra.desActividad}">
+                                            <p:outputLabel value="#{otra.desActividad}" >
+                                            </p:outputLabel>
+                                        </p:column>
+                                        <p:column  headerText="Horas Dedicadas"
+                                                   sortBy="#{asesoria.horDedicadas}">
+                                            <p:outputLabel value="#{asesoria.horDedicadas}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                            </p:tab>
+
+                        </p:wizard>
 
             </h:form>
         </ui:define>
