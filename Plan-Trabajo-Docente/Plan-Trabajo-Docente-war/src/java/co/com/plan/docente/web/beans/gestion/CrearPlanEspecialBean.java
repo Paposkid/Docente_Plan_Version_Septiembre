@@ -78,6 +78,7 @@ public class CrearPlanEspecialBean {
     private HorarioProfesorVO horarioProfesorVO;
     private boolean skip;
     private Converter horasConverter;
+    private String semestreAcademico;
 
     //<editor-fold defaultstate="collapsed" desc="Inyecciones EJB">
     @EJB
@@ -96,6 +97,7 @@ public class CrearPlanEspecialBean {
             Map<String, Object> reqParameters = FacesContext.getCurrentInstance().getExternalContext().getRequestMap();
             docente = ((Docente) reqParameters.get("docente"));
             tipoDePlan = ((String) reqParameters.get("tipoPlan"));
+            semestreAcademico = ((String) reqParameters.get("periodoAcademicoPlan"));
             if (parametro == null) {
                 parametro = persistenciaParametro.find(new BigDecimal(Constantes.VALOR_UNO));
                 horasLegales = Integer.parseInt(parametro.getParValor());
@@ -276,6 +278,7 @@ public class CrearPlanEspecialBean {
             planTrabajoEspecial.setEstado("0");
             planTrabajoEspecial.setTipoPlan(tipoDePlan);
             planTrabajoEspecial.setCodDocente(docente);
+            planTrabajoEspecial.setPeriodoAcademico(semestreAcademico);
             persitenciaPlanEspecial.create(planTrabajoEspecial);
             for (ComisionEstudio comiAux : listComisionEstudios) {
                 comiAux.setCodPlanTrabajo(planTrabajoEspecial);
@@ -296,6 +299,15 @@ public class CrearPlanEspecialBean {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters & Setters">
+
+    public String getSemestreAcademico() {
+        return semestreAcademico;
+    }
+
+    public void setSemestreAcademico(String semestreAcademico) {
+        this.semestreAcademico = semestreAcademico;
+    }
+    
     public boolean isSkip() {
         return skip;
     }

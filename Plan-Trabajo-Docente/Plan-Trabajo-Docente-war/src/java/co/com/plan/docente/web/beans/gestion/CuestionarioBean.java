@@ -6,7 +6,12 @@
 package co.com.plan.docente.web.beans.gestion;
 
 import co.com.plan.docente.entities.Docente;
+import co.com.plan.docente.entities.PlanTrabajo;
 import co.com.plan.docente.forentities.DocenteFacadeLocal;
+import co.com.plan.docente.forentities.PlanTrabajoFacadeLocal;
+import co.com.plan.docente.web.util.EnvioCorreo;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -31,23 +36,33 @@ public class CuestionarioBean {
     }
     private String cedulaDocente;
     private String tipoPlan;
+    private String periodoAcademicoPlan;
     private String doc;
     private Docente docente;
+    private PlanTrabajo planTrabajo;
 
     @EJB
     private DocenteFacadeLocal persistenciaDocente;
+    @EJB
+    private PlanTrabajoFacadeLocal persitenciaPlan;
 
     public String enviar() {
         String retorno = "";
         String pantallaPlan = "/secure/gestionPlan/crearPlanDeTrabajo";
         String pantallaPlanEspecial = "/secure/gestionPlan/crearPlanDeTrabajoEspecial";
         String pantallaPlanEspecialMedio = "/secure/gestionPlan/crearPlanDeTrabajoEspecialMedio";
+        EnvioCorreo correo = new EnvioCorreo();
         try {
+            correo.enviarCorreo("paposkid@gmail.com","dimmunile1349","papometal85@hotmail.com", "Plan trabajo", "Prueba correo Plan. todo oki.");
+            periodoAcademicoPlan = setearPeriodoAcademico();
             docente = persistenciaDocente.findByCedula(cedulaDocente);
             if (docente != null) {
-                //consultarsi tiene un plan para este semestre o periodo
-            } else {
-            }
+                planTrabajo = persitenciaPlan.findPlanByPeriodoAndDocente(periodoAcademicoPlan, docente);
+                if (planTrabajo != null) {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "El docente ya tiene un plan plan de trabajo para el semestre: " + periodoAcademicoPlan, ""));
+                    return retorno;
+                }
+            } 
         } catch (Exception e) {
             e.printStackTrace();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "El docente no existe o está inactivo.", ""));
@@ -57,11 +72,13 @@ public class CuestionarioBean {
             ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
             ec.getRequestMap().put("docente", docente);
             ec.getRequestMap().put("tipoPlan", tipoPlan);
+            ec.getRequestMap().put("periodoAcademicoPlan", periodoAcademicoPlan);
+            
             if (tipoPlan.equalsIgnoreCase("C")) {
                 retorno = pantallaPlanEspecial;
-            } else if(tipoPlan.equalsIgnoreCase("M")){
+            } else if (tipoPlan.equalsIgnoreCase("M")) {
                 retorno = pantallaPlanEspecialMedio;
-            }else {
+            } else {
                 retorno = pantallaPlan;
             }
         } catch (Exception e) {
@@ -70,7 +87,49 @@ public class CuestionarioBean {
         return retorno;
     }
 
+    public String setearPeriodoAcademico() {
+        String periodoAcademico = "";
+        Calendar cal = Calendar.getInstance();
+        String semestre = "";
+        try {
+            semestre = setearSemestre(cal.get(Calendar.MONTH));
+            periodoAcademico = cal.get(Calendar.YEAR) + "-" + semestre;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return periodoAcademico;
+    }
+
+    public String setearSemestre(int mes) {
+        String retorno = "";
+        try {
+            if (mes <= 6) {
+                retorno = "1";
+            } else {
+                retorno = "2";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return retorno;
+    }
+
 //<editor-fold defaultstate="collapsed" desc="Getters & Setters">
+    public PlanTrabajo getPlanTrabajo() {
+        return planTrabajo;
+    }
+
+    public void setPlanTrabajo(PlanTrabajo planTrabajo) {
+        this.planTrabajo = planTrabajo;
+    }
+
+    public String getPeriodoAcademicoPlan() {
+        return periodoAcademicoPlan;
+    }
+
+    public void setPeriodoAcademicoPlan(String periodoAcademicoPlan) {
+        this.periodoAcademicoPlan = periodoAcademicoPlan;
+    }
 
     public String getCedulaDocente() {
         return cedulaDocente;

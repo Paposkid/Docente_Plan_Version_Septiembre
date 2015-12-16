@@ -40,5 +40,19 @@ public class PlanTrabajoFacade extends AbstractFacade<PlanTrabajo> implements Pl
         retorno = findByEstado.getResultList();
         return retorno;
     }
+    @Override
+    public PlanTrabajo findPlanByPeriodoAndDocente(String periodo,Docente docente) {
+      PlanTrabajo retorno = null;
+        try {
+        TypedQuery<PlanTrabajo> findByPeriodoYDocente;
+        findByPeriodoYDocente = em.createNamedQuery("PlanTrabajo.findByPeriodoYDocente", PlanTrabajo.class);
+        findByPeriodoYDocente.setParameter("periodoAcademico", periodo);
+        findByPeriodoYDocente.setParameter("codDocente", docente);
+        retorno = findByPeriodoYDocente.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return retorno;
+    }
     
 }

@@ -46,6 +46,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "PlanTrabajo.findByFechCalificacion", query = "SELECT p FROM PlanTrabajo p WHERE p.fechCalificacion = :fechCalificacion"),
     @NamedQuery(name = "PlanTrabajo.findByFechCalFin", query = "SELECT p FROM PlanTrabajo p WHERE p.fechCalFin = :fechCalFin"),
     @NamedQuery(name = "PlanTrabajo.findByEstado", query = "SELECT p FROM PlanTrabajo p WHERE p.estado = :estado"),
+    @NamedQuery(name = "PlanTrabajo.findByPeriodoYDocente", query = "SELECT p FROM PlanTrabajo p WHERE p.periodoAcademico = :periodoAcademico AND p.codDocente = :codDocente"),
     @NamedQuery(name = "PlanTrabajo.findByObservacion", query = "SELECT p FROM PlanTrabajo p WHERE p.observacion = :observacion")})
 public class PlanTrabajo implements Serializable {
 
@@ -85,6 +86,8 @@ public class PlanTrabajo implements Serializable {
     private String estado;
     @Column(name = "TIPO_PLAN")
     private String tipoPlan;
+    @Column(name = "PER_ACADEMICO")
+    private String periodoAcademico;
     @JoinColumn(name = "COD_DOCENTE", referencedColumnName = "COD_DOCENTE")
     @ManyToOne(optional = false)
     private Docente codDocente;
@@ -227,6 +230,14 @@ public class PlanTrabajo implements Serializable {
 
     public void setTipoPlan(String tipoPlan) {
         this.tipoPlan = tipoPlan;
+    }
+
+    public String getPeriodoAcademico() {
+        return periodoAcademico;
+    }
+
+    public void setPeriodoAcademico(String periodoAcademico) {
+        this.periodoAcademico = periodoAcademico;
     }
 
     @XmlTransient

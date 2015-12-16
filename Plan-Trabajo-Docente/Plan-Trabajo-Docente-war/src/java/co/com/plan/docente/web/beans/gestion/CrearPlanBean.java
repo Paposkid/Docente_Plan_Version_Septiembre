@@ -44,6 +44,7 @@ import co.com.plan.docente.web.util.Util;
 import javax.faces.application.FacesMessage;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -53,6 +54,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import org.primefaces.event.FlowEvent;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -126,6 +128,7 @@ public class CrearPlanBean {
     private Map<String, HorarioProfesorVO> horarioMap;
     private List<HorarioProfesorVO> listHorarioMostrar;
     private String tipoDePlan;
+    private String semestreAcademico;
 
 //<editor-fold defaultstate="collapsed" desc="Inyecciones EJB">
     @EJB
@@ -161,6 +164,15 @@ public class CrearPlanBean {
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Getters & Setters">
+
+    public String getSemestreAcademico() {
+        return semestreAcademico;
+    }
+
+    public void setSemestreAcademico(String semestreAcademico) {
+        this.semestreAcademico = semestreAcademico;
+    }
+    
     public OtraActividad getOtraActividad() {
         if (otraActividad == null) {
             otraActividad = new OtraActividad();
@@ -751,6 +763,7 @@ public class CrearPlanBean {
             Map<String, Object> reqParameters = FacesContext.getCurrentInstance().getExternalContext().getRequestMap();
             docente = ((Docente) reqParameters.get("docente"));
             tipoDePlan = ((String) reqParameters.get("tipoPlan"));
+            semestreAcademico = ((String) reqParameters.get("periodoAcademicoPlan"));
             if (parametro == null) {
                 parametro = persistenciaParametro.find(new BigDecimal(Constantes.VALOR_UNO));
                 horasLegales = Integer.parseInt(parametro.getParValor());
@@ -1186,6 +1199,7 @@ public class CrearPlanBean {
                 planTrabajo.setEstado("0");
                 planTrabajo.setTipoPlan(tipoDePlan);
                 planTrabajo.setCodDocente(docente);
+                planTrabajo.setPeriodoAcademico(semestreAcademico);
                 persitenciaPlan.create(planTrabajo);
                 for (DocenciaDirecta docAux : listDocenciaDirecta) {
                     docAux.setCodPlanTrabajo(planTrabajo);
@@ -1228,4 +1242,5 @@ public class CrearPlanBean {
         return null;
     }
 
+   
 }

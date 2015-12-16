@@ -5,6 +5,7 @@
  */
 package co.com.plan.docente.forentities;
 
+import co.com.plan.docente.entities.Docente;
 import co.com.plan.docente.entities.PlanTrabajo;
 import java.util.List;
 import javax.ejb.Local;
@@ -31,4 +32,6 @@ public interface PlanTrabajoFacadeLocal {
     int count();
     
     public List<PlanTrabajo> findAllByEstado(String estado);
+    
+    public PlanTrabajo findPlanByPeriodoAndDocente(String periodo, Docente docente);
 }

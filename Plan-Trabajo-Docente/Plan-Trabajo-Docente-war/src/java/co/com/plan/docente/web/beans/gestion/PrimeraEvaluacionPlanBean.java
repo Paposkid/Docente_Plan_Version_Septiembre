@@ -32,9 +32,11 @@ import co.com.plan.docente.forentities.PublicacionFacadeLocal;
 import co.com.plan.docente.forentities.UsuarioFacadeLocal;
 import co.com.plan.docente.vo.HorarioProfesorVO;
 import co.com.plan.docente.web.util.Constantes;
+import co.com.plan.docente.web.util.EnvioCorreo;
 import co.com.plan.docente.web.util.Util;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -68,6 +70,7 @@ public class PrimeraEvaluacionPlanBean {
     private List<ComisionEstudio> listComisionEstudios;
     private List<ActExtAcademica> listActExtAcademicas;
     private boolean skip;
+    private boolean mostar;
 
     //<editor-fold defaultstate="collapsed" desc="Inyecciones EJB">
     @EJB
@@ -77,6 +80,7 @@ public class PrimeraEvaluacionPlanBean {
     @PostConstruct
     public void inicializacion() {
         try {
+            mostar = false;
             planes = persitenciaPlan.findAllByEstado("0");
             if (planes.isEmpty()) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "No hay planes a evaluar.", ""));
@@ -98,15 +102,51 @@ public class PrimeraEvaluacionPlanBean {
     }
 
     public String evaluar() {
-
+        EnvioCorreo correo = new EnvioCorreo();
+        String mensajeCorreo = "";
+        String estadoEvaluacion = "";
         try {
-
+            if (planTrabajo != null && !planTrabajo.getObservacion().isEmpty() && !planTrabajo.getEstado().equalsIgnoreCase("0")) {
+                planTrabajo.setFechCalificacion(new Date());
+                persitenciaPlan.edit(planTrabajo);
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "La observación y el estado son obligatorios.", ""));
+                return null;
+            }
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "El Plan de trabajo del docente: " + planTrabajo.getCodDocente().getNomDocente() + ", fué evaluado", ""));
+            try {
+                if (planTrabajo.getEstado().equalsIgnoreCase("1")) {
+                    estadoEvaluacion = "APROBADO.";
+                } else {
+                    estadoEvaluacion = "CORRECCION-AJUSTE.";
+                }
+                mensajeCorreo = "Ya se realizó la primera evaluación de su plan de trabajopara el periodo académico: "+planTrabajo.getPeriodoAcademico()+" es el estado es: "+estadoEvaluacion;
+                correo.enviarCorreo("paposkid@gmail.com", "dimmunile1349", planTrabajo.getCodDocente().getCorDocente(), "Primera Evalucaion Plan de trabajo", mensajeCorreo);
+            
+            } catch (Exception e) {
+            }
+            planTrabajo = new PlanTrabajo();
+            limpiarListas();
+            inicializacion();
         } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocurrio un Error evaluando el plan.", ""));
+            e.printStackTrace();
         }
         return null;
     }
 
+    public void limpiarListas() {
+        listDocenciaDirecta = new ArrayList();
+        investigaciones = new ArrayList();
+        listActExtAcademicas = new ArrayList();
+        listAsesoriaProyectos = new ArrayList();
+        listComisionEstudios = new ArrayList();
+        listOtrasActividades = new ArrayList();
+        listPublicaciones = new ArrayList();
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Getters & Setters">
+
     public PlanTrabajo getPlanTrabajo() {
         if (planTrabajo == null) {
             planTrabajo = new PlanTrabajo();
@@ -116,13 +156,7 @@ public class PrimeraEvaluacionPlanBean {
 
     public void setPlanTrabajo(PlanTrabajo planTrabajo) {
         try {
-            listDocenciaDirecta = new ArrayList();
-            investigaciones = new ArrayList();
-            listActExtAcademicas = new ArrayList();
-            listAsesoriaProyectos = new ArrayList();
-            listComisionEstudios = new ArrayList();
-            listOtrasActividades = new ArrayList();
-            listPublicaciones = new ArrayList();
+            limpiarListas();
             if (planTrabajo != null) {
                 listDocenciaDirecta.addAll(planTrabajo.getDocenciaDirectaCollection());
                 investigaciones.addAll(planTrabajo.getInvestigacionCollection());
@@ -131,6 +165,7 @@ public class PrimeraEvaluacionPlanBean {
                 listComisionEstudios.addAll(planTrabajo.getComisionEstudioCollection());
                 listOtrasActividades.addAll(planTrabajo.getOtraActividadCollection());
                 listPublicaciones.addAll(planTrabajo.getPublicacionCollection());
+                mostar = true;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -232,6 +267,13 @@ public class PrimeraEvaluacionPlanBean {
 
     public void setListOtrasActividades(List<OtraActividad> listOtrasActividades) {
         this.listOtrasActividades = listOtrasActividades;
+    }
+     public boolean isMostar() {
+        return mostar;
+    }
+
+    public void setMostar(boolean mostar) {
+        this.mostar = mostar;
     }
 
     //</editor-fold>

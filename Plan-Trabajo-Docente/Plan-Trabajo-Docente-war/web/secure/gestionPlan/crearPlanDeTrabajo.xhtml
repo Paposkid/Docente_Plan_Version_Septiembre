@@ -77,7 +77,7 @@ Fecha: 19/04/2015
                                                          filter="true" filterMatchMode="contains">
                                             <f:selectItems value="#{crearPlanBean.listHorarioProfesorVO}" var="hor" itemValue="#{hor}" itemLabel="#{hor.diaHora}" />
                                             <p:message for="diaHora" />
-                                        </p:selectOneMenu>   
+                                        </p:selectOneMenu>  
 
                                         <p:outputLabel  value="Agregar Curso: " />
                                         <p:commandButton id="btnAgregarMateria" update="@form:docDirecPanel"  icon="ui-icon-plusthick" action="#{crearPlanBean.agregarMateria()}" />
